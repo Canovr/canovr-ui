@@ -13,7 +13,7 @@ struct TodayCardView: View {
             // Header
             HStack {
                 Text("Heute")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 14))
                     .foregroundStyle(CanovRTheme.textSecondary)
                 Spacer()
                 SessionTypeBadge(type: day.sessionType)
@@ -50,7 +50,7 @@ struct TodayCardView: View {
                     if let zone = day.zone, let pace = day.pace {
                         HStack(spacing: 4) {
                             Text(zone)
-                                .font(.system(size: 14, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 14))
                                 .foregroundStyle(
                                     CanovRTheme.zoneColor(percentage: day.percentage ?? 100)
                                 )
@@ -81,7 +81,7 @@ struct TodayCardView: View {
 
                 Button(action: onComplete) {
                     Text("Erledigt")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.custom("Lato-Bold", size: 16))
                         .foregroundStyle(CanovRTheme.textPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)

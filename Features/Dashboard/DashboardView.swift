@@ -53,7 +53,7 @@ struct DashboardView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Text("Wochenplan")
-                                    .font(.system(size: 16, weight: .semibold))
+                                    .font(.custom("Lato-Bold", size: 16))
                                     .foregroundStyle(CanovRTheme.textPrimary)
                                 Spacer()
                                 Text(String(format: "%.0f km", week.totalKm))
@@ -80,7 +80,7 @@ struct DashboardView: View {
                         if !week.recommendations.isEmpty {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Hinweise")
-                                    .font(.system(size: 14, weight: .semibold))
+                                    .font(.custom("Lato-Bold", size: 14))
                                     .foregroundStyle(CanovRTheme.textPrimary)
 
                                 ForEach(week.recommendations, id: \.self) { rec in
@@ -104,7 +104,7 @@ struct DashboardView: View {
                         showLogRace = true
                     } label: {
                         Label("Rennen eintragen", systemImage: "trophy.fill")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(.custom("Lato-Bold", size: 14))
                             .foregroundStyle(CanovRTheme.longRun)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)

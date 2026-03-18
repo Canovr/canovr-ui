@@ -36,7 +36,7 @@ struct LogRaceSheet: View {
                         .frame(width: 120, height: 120)
 
                         Text(":")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.custom("Lato-Bold", size: 20))
 
                         Picker("Sek", selection: $seconds) {
                             ForEach(0..<60) { s in

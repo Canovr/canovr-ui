@@ -54,7 +54,7 @@ struct OnboardingSummaryView: View {
                 // Zone Preview
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Deine Pace-Zonen")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.custom("Lato-Bold", size: 16))
                         .foregroundStyle(CanovRTheme.textPrimary)
 
                     let zones = computePreviewZones()
@@ -101,7 +101,7 @@ struct OnboardingSummaryView: View {
                             .padding(.vertical, 16)
                     } else {
                         Text("Profil erstellen")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.custom("Lato-Bold", size: 18))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -173,7 +173,7 @@ private struct SummaryRow: View {
                 .foregroundStyle(CanovRTheme.textSecondary)
             Spacer()
             Text(value)
-                .font(.system(size: 16, weight: .semibold))
+                .font(.custom("Lato-Bold", size: 16))
                 .foregroundStyle(CanovRTheme.textPrimary)
         }
     }

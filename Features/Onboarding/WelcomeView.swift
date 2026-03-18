@@ -13,9 +13,9 @@ struct WelcomeView: View {
                 .foregroundStyle(CanovRTheme.azureGradient)
 
             VStack(spacing: 12) {
-                Text("CanovR")
-                    .font(.system(size: 42, weight: .bold))
-                    .foregroundStyle(CanovRTheme.textPrimary)
+                Text("CANOVR")
+                    .font(.custom("FugazOne-Regular", size: 42))
+                    .foregroundStyle(CanovRTheme.primary)
 
                 Text("Dein intelligenter Trainingsplan")
                     .font(CanovRTheme.bodyFont)
@@ -30,7 +30,7 @@ struct WelcomeView: View {
 
             Button(action: onNext) {
                 Text("Los geht's")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 18))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

@@ -25,7 +25,7 @@ struct LogWorkoutSheet: View {
                             Spacer()
                             if let zone = workout.zone {
                                 Text(zone)
-                                    .font(.system(size: 13, weight: .bold))
+                                    .font(.custom("Lato-Bold", size: 13))
                                     .foregroundStyle(CanovRTheme.azure)
                             }
                         }

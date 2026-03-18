@@ -17,7 +17,7 @@ struct WeekPlanView: View {
                         Spacer()
                         VStack(alignment: .trailing, spacing: 2) {
                             Text(String(format: "%.0f km", week.totalKm))
-                                .font(.system(size: 18, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 18))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text("\(week.hardSessions) harte Einheiten")
                                 .font(CanovRTheme.captionFont)

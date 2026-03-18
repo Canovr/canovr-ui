@@ -20,7 +20,7 @@ struct VolumeStepView: View {
                     .foregroundStyle(CanovRTheme.textSecondary)
 
                 Text("\(Int(weeklyKm)) km")
-                    .font(.system(size: 36, weight: .bold))
+                    .font(.custom("Lato-Bold", size: 36))
                     .foregroundStyle(CanovRTheme.textPrimary)
 
                 Slider(value: $weeklyKm, in: 10...150, step: 5)
@@ -56,7 +56,7 @@ struct VolumeStepView: View {
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 18))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

@@ -20,7 +20,7 @@ struct ZoneBar: View {
                     .overlay {
                         if isHighlighted {
                             Text(label)
-                                .font(.system(size: 9, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 9))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                         }
                     }

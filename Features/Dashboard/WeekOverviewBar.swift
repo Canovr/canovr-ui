@@ -21,7 +21,7 @@ struct WeekOverviewBar: View {
                                     .foregroundStyle(CanovRTheme.textSecondary)
                             } else if let zone = day.zone {
                                 Text(zone.replacingOccurrences(of: "z", with: ""))
-                                    .font(.system(size: 10, weight: .bold))
+                                    .font(.custom("Lato-Bold", size: 10))
                                     .foregroundStyle(CanovRTheme.textPrimary)
                             }
                         }
@@ -35,7 +35,7 @@ struct WeekOverviewBar: View {
 
                     // Tag-Label
                     Text(dayLabels[day.dayIndex])
-                        .font(.system(size: 11, weight: day.dayIndex == todayIndex ? .bold : .regular))
+                        .font(.custom(day.dayIndex == todayIndex ? "Lato-Bold" : "Lato-Regular", size: 11))
                         .foregroundStyle(
                             day.dayIndex == todayIndex
                                 ? CanovRTheme.azure

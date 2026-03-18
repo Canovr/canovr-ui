@@ -14,7 +14,7 @@ struct NameStepView: View {
                 .foregroundStyle(CanovRTheme.textPrimary)
 
             TextField("Vorname", text: $name)
-                .font(.system(size: 28, weight: .medium))
+                .font(.custom("Lato-Regular", size: 28))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(CanovRTheme.textPrimary)
                 .focused($focused)
@@ -28,7 +28,7 @@ struct NameStepView: View {
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 18))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

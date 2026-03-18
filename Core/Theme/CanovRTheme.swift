@@ -3,36 +3,40 @@ import SwiftUI
 // MARK: - Farben & Design-System
 
 enum CanovRTheme {
-    // Akzent
-    static let azure = Color(hex: "007AFF")
-    static let azureGradient = LinearGradient(
-        colors: [Color(hex: "0055D4"), Color(hex: "007AFF")],
+    // Akzent (Tailwind blue-400)
+    static let primary = Color(hex: "60A5FA")
+    static let primaryGradient = LinearGradient(
+        colors: [Color(hex: "3B82F6"), Color(hex: "60A5FA")],
         startPoint: .topLeading, endPoint: .bottomTrailing
     )
 
+    // Legacy alias
+    static let azure = primary
+    static let azureGradient = primaryGradient
+
     // Hintergründe
-    static let background = Color(hex: "F2F2F7")
-    static let surface = Color(hex: "FFFDF7")
-    static let surfaceElevated = Color(hex: "F5F3ED")
+    static let background = Color(hex: "E8E8ED")
+    static let surface = Color(hex: "F5F5F7")
+    static let surfaceElevated = Color(hex: "EDEDF0")
 
     // Text
     static let textPrimary = Color(hex: "1C1C1E")
     static let textSecondary = Color(hex: "6B6B70")
 
     // Session-Typen
-    static let hardSession = azure
+    static let hardSession = primary
     static let easySession = Color(hex: "A2A2A7")
     static let longRun = Color(hex: "30D158")
     static let restDay = Color(hex: "C7C7CC")
 
-    // Zonen-Farben (z80 grün → z100 azur → z115 rot)
+    // Zonen-Farben (z80 grün → z100 blau → z115 rot)
     static func zoneColor(percentage: Int) -> Color {
         switch percentage {
         case ...80:  return Color(hex: "30D158")
         case 85:     return Color(hex: "34C759")
-        case 90:     return Color(hex: "00A3FF")
-        case 95:     return Color(hex: "007AFF")
-        case 100:    return azure
+        case 90:     return Color(hex: "60A5FA")
+        case 95:     return Color(hex: "3B82F6")
+        case 100:    return primary
         case 105:    return Color(hex: "FF9500")
         case 110:    return Color(hex: "FF6B35")
         default:     return Color(hex: "FF3B30")
@@ -50,12 +54,39 @@ enum CanovRTheme {
         }
     }
 
-    // Typografie
-    static let titleFont = Font.system(size: 28, weight: .bold, design: .default)
-    static let headlineFont = Font.system(size: 22, weight: .bold, design: .default)
-    static let bodyFont = Font.system(size: 16, weight: .regular, design: .default)
-    static let captionFont = Font.system(size: 13, weight: .regular, design: .default)
+    // MARK: - Typografie (Lato)
+
+    static let titleFont = Font.custom("Lato-Bold", size: 28)
+    static let headlineFont = Font.custom("Lato-Bold", size: 22)
+    static let bodyFont = Font.custom("Lato-Regular", size: 16)
+    static let captionFont = Font.custom("Lato-Regular", size: 13)
     static let paceFont = Font.system(size: 18, weight: .semibold, design: .monospaced)
+
+    // Helpers für inline-Fonts
+    static func lato(_ size: CGFloat, weight: FontWeight = .regular) -> Font {
+        switch weight {
+        case .bold, .semibold, .heavy, .black:
+            return .custom("Lato-Bold", size: size)
+        case .light, .ultraLight, .thin:
+            return .custom("Lato-Light", size: size)
+        default:
+            return .custom("Lato-Regular", size: size)
+        }
+    }
+
+    enum FontWeight {
+        case regular, bold, semibold, heavy, black, light, ultraLight, thin, medium
+    }
+
+    // CANOVR Logo-Schrift (Fugaz One)
+    static let logoFont = Font.custom("FugazOne-Regular", size: 20)
+
+    // MARK: - Tab Bar
+
+    static let tabBarHeight: CGFloat = 56
+    static let tabBarBackground = Color(hex: "F5F5F7")
+    static let tabIconInactive = Color(hex: "9CA3AF")
+    static let tabIconActive = primary
 }
 
 // MARK: - Color Extension (Hex)

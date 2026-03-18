@@ -21,7 +21,7 @@ struct DistanceStepView: View {
                     } label: {
                         VStack(spacing: 6) {
                             Text(option.label)
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(.custom("Lato-Bold", size: 18))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text(String(format: "%.1f km", option.km))
                                 .font(CanovRTheme.captionFont)
@@ -51,7 +51,7 @@ struct DistanceStepView: View {
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 18))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

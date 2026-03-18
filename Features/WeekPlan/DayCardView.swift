@@ -8,7 +8,7 @@ struct DayCardView: View {
             // Header: Tag + Session-Typ
             HStack {
                 Text(day.dayName)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 16))
                     .foregroundStyle(CanovRTheme.textPrimary)
                 Spacer()
                 SessionTypeBadge(type: day.sessionType)
@@ -22,7 +22,7 @@ struct DayCardView: View {
                 // Workout Name
                 if let name = day.workoutName {
                     Text(name)
-                        .font(.system(size: 15, weight: .medium))
+                        .font(.custom("Lato-Regular", size: 15))
                         .foregroundStyle(CanovRTheme.textPrimary)
                 }
 
@@ -31,7 +31,7 @@ struct DayCardView: View {
                     if let zone = day.zone, let pace = day.pace {
                         HStack(spacing: 4) {
                             Text(zone)
-                                .font(.system(size: 13, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 13))
                                 .foregroundStyle(
                                     CanovRTheme.zoneColor(percentage: day.percentage ?? 100)
                                 )
@@ -43,7 +43,7 @@ struct DayCardView: View {
 
                     if let volume = day.volume {
                         Text(volume)
-                            .font(.system(size: 13))
+                            .font(.custom("Lato-Regular", size: 13))
                             .foregroundStyle(CanovRTheme.textSecondary)
                     }
 
@@ -51,7 +51,7 @@ struct DayCardView: View {
 
                     if day.estimatedKm > 0 {
                         Text(String(format: "%.0f km", day.estimatedKm))
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(.custom("Lato-Bold", size: 13))
                             .foregroundStyle(CanovRTheme.textSecondary)
                     }
                 }

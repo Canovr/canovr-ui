@@ -51,7 +51,7 @@ struct ProfileView: View {
                         // Pace Zones
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Pace-Zonen")
-                                .font(.system(size: 18, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 18))
                                 .foregroundStyle(CanovRTheme.textPrimary)
 
                             let sortedZones = athlete.paceZones.sorted { a, b in
@@ -69,10 +69,10 @@ struct ProfileView: View {
 
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(zone)
-                                            .font(.system(size: 15, weight: .bold))
+                                            .font(.custom("Lato-Bold", size: 15))
                                             .foregroundStyle(CanovRTheme.textPrimary)
                                         Text(zoneRoles[pct] ?? "")
-                                            .font(.system(size: 11))
+                                            .font(.custom("Lato-Regular", size: 11))
                                             .foregroundStyle(CanovRTheme.textSecondary)
                                     }
 
@@ -147,10 +147,10 @@ private struct ProfileStat: View {
     var body: some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.system(size: 16, weight: .bold))
+                .font(.custom("Lato-Bold", size: 16))
                 .foregroundStyle(CanovRTheme.textPrimary)
             Text(label)
-                .font(.system(size: 11))
+                .font(.custom("Lato-Regular", size: 11))
                 .foregroundStyle(CanovRTheme.textSecondary)
         }
     }

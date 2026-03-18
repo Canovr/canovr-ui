@@ -45,7 +45,7 @@ struct RaceTimeStepView: View {
                 .frame(width: 120)
 
                 Text(":")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.custom("Lato-Bold", size: 28))
                     .foregroundStyle(CanovRTheme.textPrimary)
 
                 Picker("Sekunden", selection: $seconds) {
@@ -71,7 +71,7 @@ struct RaceTimeStepView: View {
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 18))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

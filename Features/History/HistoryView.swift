@@ -53,7 +53,7 @@ struct HistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(workout.workoutName)
-                                .font(.system(size: 15, weight: .medium))
+                                .font(.custom("Lato-Regular", size: 15))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text(workout.date)
                                 .font(CanovRTheme.captionFont)
@@ -63,7 +63,7 @@ struct HistoryView: View {
                         if let zone = workout.zone {
                             let pct = Int(zone.dropFirst()) ?? 100
                             Text(zone)
-                                .font(.system(size: 13, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 13))
                                 .foregroundStyle(CanovRTheme.zoneColor(percentage: pct))
                         }
                         if let km = workout.distanceKm {
@@ -90,7 +90,7 @@ struct HistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(DistanceOption.all.first { $0.id == race.distance }?.label ?? race.distance)
-                                .font(.system(size: 15, weight: .medium))
+                                .font(.custom("Lato-Regular", size: 15))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text(race.date)
                                 .font(CanovRTheme.captionFont)
@@ -99,7 +99,7 @@ struct HistoryView: View {
                         Spacer()
                         VStack(alignment: .trailing, spacing: 4) {
                             Text(formatTime(race.timeSeconds))
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.custom("Lato-Bold", size: 15))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text(race.pace)
                                 .font(.system(size: 13, design: .monospaced))
@@ -141,7 +141,7 @@ struct HistoryView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(pace.strategy)
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.custom("Lato-Regular", size: 14))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text(pace.date)
                                 .font(CanovRTheme.captionFont)
@@ -161,7 +161,7 @@ struct HistoryView: View {
                             .font(.system(size: 13, design: .monospaced))
 
                             Text(String(format: "%+.1f%%", pace.improvementPct))
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.custom("Lato-Bold", size: 12))
                                 .foregroundStyle(pace.improvementPct > 0 ? CanovRTheme.longRun : .red)
                         }
                     }

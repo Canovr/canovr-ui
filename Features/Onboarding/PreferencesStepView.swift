@@ -60,7 +60,7 @@ struct PreferencesStepView: View {
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.custom("Lato-Bold", size: 18))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
@@ -86,7 +86,7 @@ struct DayBubbles: View {
                     selected = index
                 } label: {
                     Text(labels[index])
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.custom("Lato-Bold", size: 14))
                         .foregroundStyle(selected == index ? .white : CanovRTheme.textSecondary)
                         .frame(width: 40, height: 40)
                         .background(
