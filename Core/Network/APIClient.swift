@@ -20,7 +20,7 @@ final class APIClient {
 
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method
-        request.timeoutInterval = 30
+        request.timeoutInterval = 60
 
         if let body = endpoint.body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
