@@ -123,13 +123,15 @@ final class AppState {
             throw error
         }
 
-        // 3. Plan laden
-        var plan: WeeklyPlan? = nil
+        // 3. Plan laden — MUSS klappen
+        let plan: WeeklyPlan
         do {
             plan = try await api.generateWeek(verified.id)
-            print("Plan geladen: \(plan?.days.count ?? 0) Tage")
+            print("Plan geladen: \(plan.days.count) Tage")
         } catch {
-            print("Plan-Fehler (nicht kritisch): \(error)")
+            isLoading = false
+            print("Plan-Fehler: \(error)")
+            throw error
         }
 
         // 4. ERST JETZT alles setzen — atomisch
