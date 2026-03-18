@@ -1,4 +1,4 @@
-# Xcode
+# Xcode user data (nicht das Projekt selbst!)
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
 xcuserdata/
@@ -10,6 +10,7 @@ build/
 *.perspectivev3
 *.xccheckout
 *.moved-aside
+*.xcscmblueprint
 
 # macOS
 .DS_Store
