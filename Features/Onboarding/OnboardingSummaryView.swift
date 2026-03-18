@@ -120,9 +120,12 @@ struct OnboardingSummaryView: View {
         isCreating = true
         error = nil
         do {
-            _ = try await appState.finishOnboarding(data.toAthleteCreate())
+            try await appState.finishOnboarding(data.toAthleteCreate())
+            // Navigation passiert automatisch über isOnboarded
+        } catch let apiError as APIError {
+            self.error = apiError.localizedDescription
         } catch {
-            self.error = "Fehler: \(error.localizedDescription)"
+            self.error = "Verbindungsfehler: \(error.localizedDescription)"
         }
         isCreating = false
     }

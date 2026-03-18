@@ -4,7 +4,13 @@ import Foundation
 final class AppState {
     // Persistierter Athlet
     var athleteId: Int? {
-        didSet { UserDefaults.standard.set(athleteId, forKey: "athleteId") }
+        didSet {
+            if let athleteId {
+                UserDefaults.standard.set(athleteId, forKey: "athleteId")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "athleteId")
+            }
+        }
     }
 
     // Geladene Daten
@@ -18,7 +24,7 @@ final class AppState {
 
     let api: APIClient
 
-    var isOnboarded: Bool { athleteId != nil }
+    var isOnboarded: Bool { athleteId != nil && athlete != nil }
 
     /// Heutiger Wochentag als day_index (0=Sonntag, 6=Samstag)
     var todayIndex: Int {
@@ -38,6 +44,7 @@ final class AppState {
 
     // MARK: - Daten laden
 
+    /// Athlet vom Server laden. Bei 404 → Reset (DB wurde geleert).
     @MainActor
     func loadAthlete() async {
         guard let id = athleteId else { return }
@@ -46,7 +53,13 @@ final class AppState {
         do {
             athlete = try await api.getAthlete(id)
         } catch let err as APIError {
-            error = err
+            if case .notFound = err {
+                // Server kennt den Athleten nicht mehr → zurück zum Onboarding
+                print("Athlet \(id) nicht auf Server gefunden — Reset")
+                reset()
+            } else {
+                error = err
+            }
         } catch {
             self.error = .networkError(error)
         }
@@ -80,34 +93,50 @@ final class AppState {
         }
     }
 
-    /// Onboarding abschließen: Athlet anlegen + Wochenplan laden
+    // MARK: - Onboarding
+
+    /// Athlet anlegen, verifizieren, Plan laden. Navigiert NUR bei Erfolg.
     @MainActor
-    func finishOnboarding(_ data: AthleteCreate) async throws -> AthleteResponse {
+    func finishOnboarding(_ data: AthleteCreate) async throws {
         isLoading = true
         error = nil
 
-        let response: AthleteResponse
+        // 1. Athlet anlegen
+        let created: AthleteResponse
         do {
-            response = try await api.createAthlete(data)
+            created = try await api.createAthlete(data)
+            print("Athlet angelegt: id=\(created.id), name=\(created.name)")
         } catch {
             isLoading = false
+            print("Fehler beim Anlegen: \(error)")
             throw error
         }
 
-        // Athlet steht in der DB — jetzt Plan laden
-        athlete = response
-        let tempId = response.id
-
+        // 2. Verifizieren: Athlet wirklich in DB?
+        let verified: AthleteResponse
         do {
-            currentWeek = try await api.generateWeek(tempId)
+            verified = try await api.getAthlete(created.id)
+            print("Athlet verifiziert: id=\(verified.id)")
         } catch {
-            // Plan-Fehler ist nicht kritisch — Athlet existiert
+            isLoading = false
+            print("Athlet NICHT verifiziert: \(error)")
+            throw error
         }
 
-        // Erst JETZT athleteId setzen → triggert Navigation zu MainTabView
+        // 3. Plan laden
+        var plan: WeeklyPlan? = nil
+        do {
+            plan = try await api.generateWeek(verified.id)
+            print("Plan geladen: \(plan?.days.count ?? 0) Tage")
+        } catch {
+            print("Plan-Fehler (nicht kritisch): \(error)")
+        }
+
+        // 4. ERST JETZT alles setzen — atomisch
+        athlete = verified
+        currentWeek = plan
         isLoading = false
-        athleteId = tempId
-        return response
+        athleteId = verified.id  // triggert Navigation
     }
 
     /// Logout / Reset
@@ -117,6 +146,5 @@ final class AppState {
         athlete = nil
         currentWeek = nil
         history = nil
-        UserDefaults.standard.removeObject(forKey: "athleteId")
     }
 }
