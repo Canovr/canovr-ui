@@ -29,12 +29,29 @@ final class APIClient {
             request.httpBody = try encoder.encode(AnyEncodable(body))
         }
 
+        #if DEBUG
+        print("[\(endpoint.method)] \(baseURL + endpoint.path)")
+        if let body = request.httpBody, let json = String(data: body, encoding: .utf8) {
+            print("  BODY: \(json)")
+        }
+        #endif
+
         let (data, response): (Data, URLResponse)
         do {
             (data, response) = try await URLSession.shared.data(for: request)
         } catch {
+            print("  ERROR: \(error)")
             throw APIError.networkError(error)
         }
+
+        #if DEBUG
+        if let httpResponse = response as? HTTPURLResponse {
+            print("  RESPONSE: \(httpResponse.statusCode)")
+            if let body = String(data: data, encoding: .utf8)?.prefix(500) {
+                print("  DATA: \(body)")
+            }
+        }
+        #endif
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.serverError

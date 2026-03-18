@@ -14,7 +14,6 @@ struct CanovRApp: App {
                 }
             }
             .environment(appState)
-            .preferredColorScheme(.dark)
         }
     }
 }

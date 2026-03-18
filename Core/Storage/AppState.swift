@@ -83,10 +83,30 @@ final class AppState {
     /// Onboarding abschließen: Athlet anlegen + Wochenplan laden
     @MainActor
     func finishOnboarding(_ data: AthleteCreate) async throws -> AthleteResponse {
-        let response = try await api.createAthlete(data)
-        athleteId = response.id
+        isLoading = true
+        error = nil
+
+        let response: AthleteResponse
+        do {
+            response = try await api.createAthlete(data)
+        } catch {
+            isLoading = false
+            throw error
+        }
+
+        // Athlet steht in der DB — jetzt Plan laden
         athlete = response
-        await loadWeek()
+        let tempId = response.id
+
+        do {
+            currentWeek = try await api.generateWeek(tempId)
+        } catch {
+            // Plan-Fehler ist nicht kritisch — Athlet existiert
+        }
+
+        // Erst JETZT athleteId setzen → triggert Navigation zu MainTabView
+        isLoading = false
+        athleteId = tempId
         return response
     }
 
