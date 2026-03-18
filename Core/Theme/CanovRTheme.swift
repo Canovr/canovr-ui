@@ -11,19 +11,19 @@ enum CanovRTheme {
     )
 
     // Hintergründe
-    static let background = Color(hex: "0A0A0F")
-    static let surface = Color(hex: "1C1C1E")
-    static let surfaceElevated = Color(hex: "2C2C2E")
+    static let background = Color(hex: "F2F2F7")
+    static let surface = Color(hex: "FFFDF7")
+    static let surfaceElevated = Color(hex: "F5F3ED")
 
     // Text
-    static let textPrimary = Color.white
-    static let textSecondary = Color(hex: "8E8E93")
+    static let textPrimary = Color(hex: "1C1C1E")
+    static let textSecondary = Color(hex: "6B6B70")
 
     // Session-Typen
     static let hardSession = azure
-    static let easySession = Color(hex: "48484A")
+    static let easySession = Color(hex: "A2A2A7")
     static let longRun = Color(hex: "30D158")
-    static let restDay = Color(hex: "636366")
+    static let restDay = Color(hex: "C7C7CC")
 
     // Zonen-Farben (z80 grün → z100 azur → z115 rot)
     static func zoneColor(percentage: Int) -> Color {
@@ -79,9 +79,10 @@ struct CardStyle: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .padding(16)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(elevated ? CanovRTheme.surfaceElevated : CanovRTheme.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
 

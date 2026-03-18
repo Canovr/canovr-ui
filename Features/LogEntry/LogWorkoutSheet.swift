@@ -21,7 +21,7 @@ struct LogWorkoutSheet: View {
                     if let workout = todayWorkout {
                         HStack {
                             Text(workout.workoutName ?? workout.workoutKey ?? "Training")
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Spacer()
                             if let zone = workout.zone {
                                 Text(zone)

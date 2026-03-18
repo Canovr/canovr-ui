@@ -32,7 +32,7 @@ struct OnboardingSummaryView: View {
             VStack(spacing: 24) {
                 Text("Alles klar?")
                     .font(CanovRTheme.titleFont)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
                     .padding(.top, 24)
 
                 // Summary Card
@@ -50,13 +50,12 @@ struct OnboardingSummaryView: View {
                     }
                 }
                 .cardStyle()
-                .padding(.horizontal, 24)
 
                 // Zone Preview
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Deine Pace-Zonen")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(CanovRTheme.textPrimary)
 
                     let zones = computePreviewZones()
                     ForEach(zones, id: \.label) { zone in
@@ -72,7 +71,7 @@ struct OnboardingSummaryView: View {
 
                             Text(zone.pace)
                                 .font(CanovRTheme.paceFont)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
 
                             Spacer()
 
@@ -83,7 +82,6 @@ struct OnboardingSummaryView: View {
                     }
                 }
                 .cardStyle()
-                .padding(.horizontal, 24)
 
                 if let error {
                     Text(error)
@@ -176,7 +174,7 @@ private struct SummaryRow: View {
             Spacer()
             Text(value)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
         }
     }
 }

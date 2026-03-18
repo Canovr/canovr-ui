@@ -54,7 +54,7 @@ struct HistoryView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(workout.workoutName)
                                 .font(.system(size: 15, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Text(workout.date)
                                 .font(CanovRTheme.captionFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)
@@ -73,7 +73,6 @@ struct HistoryView: View {
                         }
                     }
                     .cardStyle()
-                    .padding(.horizontal, 20)
                 }
             } else {
                 emptyState(text: "Noch keine Workouts eingetragen")
@@ -92,7 +91,7 @@ struct HistoryView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(DistanceOption.all.first { $0.id == race.distance }?.label ?? race.distance)
                                 .font(.system(size: 15, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Text(race.date)
                                 .font(CanovRTheme.captionFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)
@@ -101,14 +100,13 @@ struct HistoryView: View {
                         VStack(alignment: .trailing, spacing: 4) {
                             Text(formatTime(race.timeSeconds))
                                 .font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Text(race.pace)
                                 .font(.system(size: 13, design: .monospaced))
                                 .foregroundStyle(CanovRTheme.azure)
                         }
                     }
                     .cardStyle()
-                    .padding(.horizontal, 20)
                 }
             } else {
                 emptyState(text: "Noch keine Rennergebnisse")
@@ -144,7 +142,7 @@ struct HistoryView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(pace.strategy)
                                 .font(.system(size: 14, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Text(pace.date)
                                 .font(CanovRTheme.captionFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)
@@ -158,7 +156,7 @@ struct HistoryView: View {
                                     .font(.system(size: 10))
                                     .foregroundStyle(CanovRTheme.azure)
                                 Text(pace.newPace)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(CanovRTheme.textPrimary)
                             }
                             .font(.system(size: 13, design: .monospaced))
 
@@ -168,7 +166,6 @@ struct HistoryView: View {
                         }
                     }
                     .cardStyle()
-                    .padding(.horizontal, 20)
                 }
             } else {
                 emptyState(text: "Noch keine Pace-Änderungen")

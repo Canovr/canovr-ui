@@ -10,7 +10,7 @@ struct DistanceStepView: View {
 
             Text("Deine Zieldistanz")
                 .font(CanovRTheme.titleFont)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
 
             LazyVGrid(columns: [
                 GridItem(.flexible()), GridItem(.flexible()),
@@ -22,7 +22,7 @@ struct DistanceStepView: View {
                         VStack(spacing: 6) {
                             Text(option.label)
                                 .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Text(String(format: "%.1f km", option.km))
                                 .font(CanovRTheme.captionFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)

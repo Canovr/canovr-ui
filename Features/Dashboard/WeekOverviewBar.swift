@@ -22,7 +22,7 @@ struct WeekOverviewBar: View {
                             } else if let zone = day.zone {
                                 Text(zone.replacingOccurrences(of: "z", with: ""))
                                     .font(.system(size: 10, weight: .bold))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(CanovRTheme.textPrimary)
                             }
                         }
                         .overlay {

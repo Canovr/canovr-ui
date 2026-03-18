@@ -10,7 +10,7 @@ struct ErrorBanner: View {
                 .foregroundStyle(.red)
             Text(message)
                 .font(CanovRTheme.captionFont)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
             Spacer()
             if let onDismiss {
                 Button { onDismiss() } label: {

@@ -18,7 +18,7 @@ struct WeekPlanView: View {
                         VStack(alignment: .trailing, spacing: 2) {
                             Text(String(format: "%.0f km", week.totalKm))
                                 .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                             Text("\(week.hardSessions) harte Einheiten")
                                 .font(CanovRTheme.captionFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)
@@ -29,7 +29,6 @@ struct WeekPlanView: View {
                     // Day Cards
                     ForEach(week.days) { day in
                         DayCardView(day: day)
-                            .padding(.horizontal, 20)
                     }
 
                     // Reasoning Trace (expandable)
@@ -48,7 +47,6 @@ struct WeekPlanView: View {
                     }
                     .tint(CanovRTheme.azure)
                     .cardStyle()
-                    .padding(.horizontal, 20)
                 }
                 .padding(.vertical, 16)
             } else {

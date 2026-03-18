@@ -9,7 +9,7 @@ struct PaceDisplay: View {
         HStack(spacing: 2) {
             Text(pace.replacingOccurrences(of: "/km", with: ""))
                 .font(size)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
             Text("/km")
                 .font(CanovRTheme.captionFont)
                 .foregroundStyle(CanovRTheme.textSecondary)

@@ -9,7 +9,7 @@ struct DayCardView: View {
             HStack {
                 Text(day.dayName)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
                 Spacer()
                 SessionTypeBadge(type: day.sessionType)
             }
@@ -23,7 +23,7 @@ struct DayCardView: View {
                 if let name = day.workoutName {
                     Text(name)
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(CanovRTheme.textPrimary)
                 }
 
                 // Zone + Pace + Volume

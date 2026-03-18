@@ -28,7 +28,7 @@ struct RaceTimeStepView: View {
 
             Text("Deine aktuelle Bestzeit")
                 .font(CanovRTheme.titleFont)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
 
             Text(distanceLabel)
                 .font(CanovRTheme.bodyFont)
@@ -46,7 +46,7 @@ struct RaceTimeStepView: View {
 
                 Text(":")
                     .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
 
                 Picker("Sekunden", selection: $seconds) {
                     ForEach(0..<60) { s in

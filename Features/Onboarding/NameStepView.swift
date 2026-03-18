@@ -11,12 +11,12 @@ struct NameStepView: View {
 
             Text("Wie heißt du?")
                 .font(CanovRTheme.titleFont)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
 
             TextField("Vorname", text: $name)
                 .font(.system(size: 28, weight: .medium))
                 .multilineTextAlignment(.center)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
                 .focused($focused)
                 .submitLabel(.continue)
                 .onSubmit {

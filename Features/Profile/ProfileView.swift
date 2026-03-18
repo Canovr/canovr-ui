@@ -29,7 +29,7 @@ struct ProfileView: View {
 
                             Text(athlete.name)
                                 .font(CanovRTheme.headlineFont)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
 
                             HStack(spacing: 16) {
                                 ProfileStat(
@@ -47,13 +47,12 @@ struct ProfileView: View {
                             )
                         }
                         .cardStyle()
-                        .padding(.horizontal, 20)
 
                         // Pace Zones
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Pace-Zonen")
                                 .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
 
                             let sortedZones = athlete.paceZones.sorted { a, b in
                                 let aNum = Int(a.key.dropFirst()) ?? 0
@@ -71,7 +70,7 @@ struct ProfileView: View {
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(zone)
                                             .font(.system(size: 15, weight: .bold))
-                                            .foregroundStyle(.white)
+                                            .foregroundStyle(CanovRTheme.textPrimary)
                                         Text(zoneRoles[pct] ?? "")
                                             .font(.system(size: 11))
                                             .foregroundStyle(CanovRTheme.textSecondary)
@@ -81,12 +80,11 @@ struct ProfileView: View {
 
                                     Text(pace)
                                         .font(CanovRTheme.paceFont)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(CanovRTheme.textPrimary)
                                 }
                             }
                         }
                         .cardStyle()
-                        .padding(.horizontal, 20)
 
                         // Actions
                         VStack(spacing: 12) {
@@ -150,7 +148,7 @@ private struct ProfileStat: View {
         VStack(spacing: 4) {
             Text(value)
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
             Text(label)
                 .font(.system(size: 11))
                 .foregroundStyle(CanovRTheme.textSecondary)

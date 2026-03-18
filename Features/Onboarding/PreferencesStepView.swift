@@ -15,7 +15,7 @@ struct PreferencesStepView: View {
 
             Text("Präferenzen")
                 .font(CanovRTheme.titleFont)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
 
             // Ruhetag
             VStack(spacing: 12) {
@@ -39,7 +39,7 @@ struct PreferencesStepView: View {
             VStack(spacing: 12) {
                 Toggle("Wettkampf geplant?", isOn: $hasRace)
                     .tint(CanovRTheme.azure)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
                     .padding(.horizontal, 24)
 
                 if hasRace {
@@ -51,7 +51,7 @@ struct PreferencesStepView: View {
                     )
                     .datePickerStyle(.compact)
                     .tint(CanovRTheme.azure)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
                     .padding(.horizontal, 24)
                 }
             }

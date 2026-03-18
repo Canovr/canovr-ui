@@ -27,7 +27,7 @@ struct TodayCardView: View {
                         .foregroundStyle(CanovRTheme.textSecondary)
                     Text("Ruhetag")
                         .font(CanovRTheme.headlineFont)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(CanovRTheme.textPrimary)
                     Text("Genieß die Pause")
                         .font(CanovRTheme.bodyFont)
                         .foregroundStyle(CanovRTheme.textSecondary)
@@ -38,7 +38,7 @@ struct TodayCardView: View {
                 // Workout
                 Text(day.workoutName ?? "Training")
                     .font(CanovRTheme.headlineFont)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
 
                 if let description = day.description {
                     Text(description)
@@ -82,7 +82,7 @@ struct TodayCardView: View {
                 Button(action: onComplete) {
                     Text("Erledigt")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(CanovRTheme.textPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                         .background(CanovRTheme.azure.opacity(0.3))
@@ -91,12 +91,13 @@ struct TodayCardView: View {
                 .padding(.top, 4)
             }
         }
-        .padding(20)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             isHard
                 ? AnyShapeStyle(CanovRTheme.azureGradient.opacity(0.15))
                 : AnyShapeStyle(CanovRTheme.surface)
         )
-        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }

@@ -21,7 +21,7 @@ struct ZoneBar: View {
                         if isHighlighted {
                             Text(label)
                                 .font(.system(size: 9, weight: .bold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
                         }
                     }
             }

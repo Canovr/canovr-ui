@@ -11,7 +11,7 @@ struct VolumeStepView: View {
 
             Text("Dein Training")
                 .font(CanovRTheme.titleFont)
-                .foregroundStyle(.white)
+                .foregroundStyle(CanovRTheme.textPrimary)
 
             // Wochenkilometer
             VStack(spacing: 16) {
@@ -21,7 +21,7 @@ struct VolumeStepView: View {
 
                 Text("\(Int(weeklyKm)) km")
                     .font(.system(size: 36, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
 
                 Slider(value: $weeklyKm, in: 10...150, step: 5)
                     .tint(CanovRTheme.azure)

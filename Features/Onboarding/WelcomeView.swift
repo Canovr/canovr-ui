@@ -15,7 +15,7 @@ struct WelcomeView: View {
             VStack(spacing: 12) {
                 Text("CanovR")
                     .font(.system(size: 42, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(CanovRTheme.textPrimary)
 
                 Text("Dein intelligenter Trainingsplan")
                     .font(CanovRTheme.bodyFont)

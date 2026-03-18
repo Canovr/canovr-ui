@@ -29,7 +29,7 @@ struct DashboardView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Hallo, \(athlete.name)")
                                 .font(CanovRTheme.titleFont)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(CanovRTheme.textPrimary)
 
                             PhaseIndicator(
                                 phase: athlete.currentPhase,
@@ -46,7 +46,6 @@ struct DashboardView: View {
                         TodayCardView(day: today) {
                             showLogWorkout = true
                         }
-                        .padding(.horizontal, 20)
                     }
 
                     // Week Overview
@@ -55,7 +54,7 @@ struct DashboardView: View {
                             HStack {
                                 Text("Wochenplan")
                                     .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(CanovRTheme.textPrimary)
                                 Spacer()
                                 Text(String(format: "%.0f km", week.totalKm))
                                     .font(CanovRTheme.captionFont)
@@ -76,14 +75,13 @@ struct DashboardView: View {
                             }
                         }
                         .cardStyle()
-                        .padding(.horizontal, 20)
 
                         // Recommendations
                         if !week.recommendations.isEmpty {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Hinweise")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(CanovRTheme.textPrimary)
 
                                 ForEach(week.recommendations, id: \.self) { rec in
                                     HStack(alignment: .top, spacing: 8) {
@@ -98,7 +96,6 @@ struct DashboardView: View {
                                 }
                             }
                             .cardStyle()
-                            .padding(.horizontal, 20)
                         }
                     }
 
