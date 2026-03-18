@@ -86,6 +86,7 @@ final class AppState {
         let response = try await api.createAthlete(data)
         athleteId = response.id
         athlete = response
+        await loadWeek()
         return response
     }
 

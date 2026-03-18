@@ -107,7 +107,7 @@ struct DashboardView: View {
                         Button {
                             Task { await appState.loadWeek() }
                         } label: {
-                            Label("Neuer Plan", systemImage: "arrow.clockwise")
+                            Label("Plan neu generieren", systemImage: "arrow.clockwise")
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(CanovRTheme.azure)
                                 .frame(maxWidth: .infinity)
