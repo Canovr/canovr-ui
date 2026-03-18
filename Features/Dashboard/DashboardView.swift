@@ -103,30 +103,16 @@ struct DashboardView: View {
                     }
 
                     // Quick Actions
-                    HStack(spacing: 12) {
-                        Button {
-                            Task { await appState.loadWeek() }
-                        } label: {
-                            Label("Plan neu generieren", systemImage: "arrow.clockwise")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(CanovRTheme.azure)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(CanovRTheme.azure.opacity(0.15))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
-
-                        Button {
-                            showLogRace = true
-                        } label: {
-                            Label("Rennen", systemImage: "trophy.fill")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(CanovRTheme.longRun)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(CanovRTheme.longRun.opacity(0.15))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
+                    Button {
+                        showLogRace = true
+                    } label: {
+                        Label("Rennen eintragen", systemImage: "trophy.fill")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(CanovRTheme.longRun)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(CanovRTheme.longRun.opacity(0.15))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                     .padding(.horizontal, 20)
                 }
