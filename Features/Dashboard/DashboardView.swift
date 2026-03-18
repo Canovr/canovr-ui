@@ -9,6 +9,21 @@ struct DashboardView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+                    // Error Banner
+                    if let error = appState.error {
+                        ErrorBanner(message: error.localizedDescription) {
+                            appState.error = nil
+                        }
+                        .padding(.horizontal, 20)
+                    }
+
+                    // Loading
+                    if appState.isLoading {
+                        ProgressView()
+                            .tint(CanovRTheme.azure)
+                            .padding(.top, 8)
+                    }
+
                     // Header
                     if let athlete = appState.athlete {
                         VStack(alignment: .leading, spacing: 8) {
