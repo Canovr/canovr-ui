@@ -117,15 +117,20 @@ struct OnboardingSummaryView: View {
     }
 
     private func createAthlete() async {
+        print("=== ONBOARDING: Profil erstellen gestartet ===")
+        print("Name: \(data.name), Distanz: \(data.targetDistance), Zeit: \(data.raceTimeInSeconds)s")
+        print("Server: \(appState.api.baseURL)")
         isCreating = true
         error = nil
         do {
             try await appState.finishOnboarding(data.toAthleteCreate())
-            // Navigation passiert automatisch über isOnboarded
+            print("=== ONBOARDING: Erfolgreich! ===")
         } catch let apiError as APIError {
-            self.error = apiError.localizedDescription
+            print("=== ONBOARDING FEHLER (API): \(apiError) ===")
+            self.error = "API-Fehler: \(apiError.localizedDescription)"
         } catch {
-            self.error = "Verbindungsfehler: \(error.localizedDescription)"
+            print("=== ONBOARDING FEHLER: \(error) ===")
+            self.error = "Fehler: \(error.localizedDescription)"
         }
         isCreating = false
     }
