@@ -13,7 +13,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		54054B5C2F6B2D1600F99C47 /* canovr-ios-app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "canovr-ios-app";
+			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
