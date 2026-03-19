@@ -123,17 +123,31 @@ final class AppState {
             throw error
         }
 
-        // 3. Plan laden — Versuch, aber nicht blockierend
+        // 3. Plan laden mit 30s Timeout
+        let plan: WeeklyPlan
         do {
-            let plan = try await api.generateWeek(verified.id)
-            currentWeek = plan
+            plan = try await withThrowingTaskGroup(of: WeeklyPlan.self) { group in
+                group.addTask {
+                    try await self.api.generateWeek(verified.id)
+                }
+                group.addTask {
+                    try await Task.sleep(nanoseconds: 30_000_000_000)
+                    throw APIError.networkError(URLError(.timedOut))
+                }
+                let result = try await group.next()!
+                group.cancelAll()
+                return result
+            }
             print("Plan geladen: \(plan.days.count) Tage")
         } catch {
-            print("Plan-Fehler (wird auf Dashboard nachgeladen): \(error)")
+            isLoading = false
+            print("Plan-Fehler: \(error)")
+            throw error
         }
 
-        // 4. Athlet ist verifiziert — navigieren
+        // 4. Alles da — navigieren
         athlete = verified
+        currentWeek = plan
         isLoading = false
         athleteId = verified.id  // triggert Navigation
     }
