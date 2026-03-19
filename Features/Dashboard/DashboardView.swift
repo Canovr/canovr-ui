@@ -41,6 +41,22 @@ struct DashboardView: View {
                         .padding(.horizontal, 20)
                     }
 
+                    // Plan wird geladen
+                    if appState.currentWeek == nil && !appState.isLoading {
+                        VStack(spacing: 12) {
+                            ProgressView()
+                                .tint(CanovRTheme.primary)
+                            Text("Wochenplan wird erstellt...")
+                                .font(CanovRTheme.bodyFont)
+                                .foregroundStyle(CanovRTheme.textSecondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 32)
+                        .task {
+                            await appState.loadWeek()
+                        }
+                    }
+
                     // Today Card
                     if let today = appState.todayWorkout {
                         TodayCardView(day: today) {

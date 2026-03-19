@@ -123,20 +123,17 @@ final class AppState {
             throw error
         }
 
-        // 3. Plan laden — MUSS klappen
-        let plan: WeeklyPlan
+        // 3. Plan laden — Versuch, aber nicht blockierend
         do {
-            plan = try await api.generateWeek(verified.id)
+            let plan = try await api.generateWeek(verified.id)
+            currentWeek = plan
             print("Plan geladen: \(plan.days.count) Tage")
         } catch {
-            isLoading = false
-            print("Plan-Fehler: \(error)")
-            throw error
+            print("Plan-Fehler (wird auf Dashboard nachgeladen): \(error)")
         }
 
-        // 4. ERST JETZT alles setzen — atomisch
+        // 4. Athlet ist verifiziert — navigieren
         athlete = verified
-        currentWeek = plan
         isLoading = false
         athleteId = verified.id  // triggert Navigation
     }
