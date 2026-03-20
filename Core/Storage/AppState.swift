@@ -20,6 +20,7 @@ final class AppState {
 
     // UI State
     var isLoading = false
+    var isLoadingWeek = false
     var error: APIError?
 
     let api: APIClient
@@ -67,18 +68,34 @@ final class AppState {
     }
 
     @MainActor
-    func loadWeek() async {
+    func loadWeek(retries: Int = 3) async {
         guard let id = athleteId else { return }
-        isLoading = true
+        isLoadingWeek = true
         error = nil
-        do {
-            currentWeek = try await api.generateWeek(id)
-        } catch let err as APIError {
-            error = err
-        } catch {
-            self.error = .networkError(error)
+
+        for attempt in 1...retries {
+            do {
+                currentWeek = try await api.generateWeek(id)
+                print("Plan geladen (Versuch \(attempt))")
+                isLoadingWeek = false
+                return
+            } catch let err as APIError {
+                print("Plan-Fehler Versuch \(attempt)/\(retries): \(err)")
+                if attempt == retries {
+                    error = err
+                }
+            } catch {
+                print("Plan-Fehler Versuch \(attempt)/\(retries): \(error)")
+                if attempt == retries {
+                    self.error = .networkError(error)
+                }
+            }
+            // Exponential backoff: 2s, 4s, 8s
+            if attempt < retries {
+                try? await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(attempt))) * 1_000_000_000)
+            }
         }
-        isLoading = false
+        isLoadingWeek = false
     }
 
     @MainActor
@@ -95,7 +112,7 @@ final class AppState {
 
     // MARK: - Onboarding
 
-    /// Athlet anlegen, verifizieren, Plan laden. Navigiert NUR bei Erfolg.
+    /// Athlet anlegen und verifizieren. Plan wird im Hintergrund geladen.
     @MainActor
     func finishOnboarding(_ data: AthleteCreate) async throws {
         isLoading = true
@@ -123,33 +140,13 @@ final class AppState {
             throw error
         }
 
-        // 3. Plan laden mit 30s Timeout
-        let plan: WeeklyPlan
-        do {
-            plan = try await withThrowingTaskGroup(of: WeeklyPlan.self) { group in
-                group.addTask {
-                    try await self.api.generateWeek(verified.id)
-                }
-                group.addTask {
-                    try await Task.sleep(nanoseconds: 30_000_000_000)
-                    throw APIError.networkError(URLError(.timedOut))
-                }
-                let result = try await group.next()!
-                group.cancelAll()
-                return result
-            }
-            print("Plan geladen: \(plan.days.count) Tage")
-        } catch {
-            isLoading = false
-            print("Plan-Fehler: \(error)")
-            throw error
-        }
-
-        // 4. Alles da — navigieren
+        // 3. Sofort navigieren — Plan im Hintergrund laden
         athlete = verified
-        currentWeek = plan
         isLoading = false
-        athleteId = verified.id  // triggert Navigation
+        athleteId = verified.id  // triggert Navigation zum Dashboard
+
+        // 4. Plan async laden mit Retry (blockiert Navigation nicht)
+        Task { await loadWeek(retries: 3) }
     }
 
     /// Logout / Reset
