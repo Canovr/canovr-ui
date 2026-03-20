@@ -55,24 +55,42 @@ final class AppState {
 
     // MARK: - Daten laden
 
-    /// Athlet vom Server laden. Bei 404 → Reset (DB wurde geleert).
+    /// Athlet vom Server laden. Retries bei 429/504 (Cloud Run cold starts). Bei 404 → Reset.
     @MainActor
-    func loadAthlete() async {
+    func loadAthlete(retries: Int = 3) async {
         guard let id = athleteId else { return }
         isLoading = true
         error = nil
-        do {
-            athlete = try await api.getAthlete(id)
-        } catch let err as APIError {
-            if case .notFound = err {
-                // Server kennt den Athleten nicht mehr → zurück zum Onboarding
-                print("Athlet \(id) nicht auf Server gefunden — Reset")
-                reset()
-            } else {
-                error = err
+
+        var lastError: APIError?
+        for attempt in 0...retries {
+            if attempt > 0 {
+                let delay = UInt64(pow(2.0, Double(attempt))) * 1_000_000_000
+                try? await Task.sleep(nanoseconds: delay)
             }
-        } catch {
-            self.error = .networkError(error)
+            do {
+                athlete = try await api.getAthlete(id)
+                lastError = nil
+                break
+            } catch let err as APIError {
+                if case .notFound = err {
+                    print("Athlet \(id) nicht auf Server gefunden — Reset")
+                    reset()
+                    return
+                }
+                lastError = err
+                if case .rateLimited = err { continue }
+                if case .upstreamTimeout = err { continue }
+                if case .clientTimeout = err { continue }
+                break
+            } catch {
+                lastError = .networkError(error)
+                break
+            }
+        }
+
+        if let lastError {
+            self.error = lastError
         }
         isLoading = false
     }
