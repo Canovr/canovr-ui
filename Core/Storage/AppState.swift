@@ -12,6 +12,15 @@ final class AppState {
             }
         }
     }
+    private var pendingCreateKey: String? {
+        didSet {
+            if let pendingCreateKey {
+                UserDefaults.standard.set(pendingCreateKey, forKey: "pendingCreateKey")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "pendingCreateKey")
+            }
+        }
+    }
 
     // Geladene Daten
     var athlete: AthleteResponse?
@@ -20,7 +29,6 @@ final class AppState {
 
     // UI State
     var isLoading = false
-    var isLoadingWeek = false
     var error: APIError?
 
     let api: APIClient
@@ -41,6 +49,7 @@ final class AppState {
         self.api = api
         let stored = UserDefaults.standard.object(forKey: "athleteId") as? Int
         self.athleteId = stored
+        self.pendingCreateKey = UserDefaults.standard.string(forKey: "pendingCreateKey")
     }
 
     // MARK: - Daten laden
@@ -68,34 +77,18 @@ final class AppState {
     }
 
     @MainActor
-    func loadWeek(retries: Int = 3) async {
+    func loadWeek() async {
         guard let id = athleteId else { return }
-        isLoadingWeek = true
+        isLoading = true
         error = nil
-
-        for attempt in 1...retries {
-            do {
-                currentWeek = try await api.generateWeek(id)
-                print("Plan geladen (Versuch \(attempt))")
-                isLoadingWeek = false
-                return
-            } catch let err as APIError {
-                print("Plan-Fehler Versuch \(attempt)/\(retries): \(err)")
-                if attempt == retries {
-                    error = err
-                }
-            } catch {
-                print("Plan-Fehler Versuch \(attempt)/\(retries): \(error)")
-                if attempt == retries {
-                    self.error = .networkError(error)
-                }
-            }
-            // Exponential backoff: 2s, 4s, 8s
-            if attempt < retries {
-                try? await Task.sleep(nanoseconds: UInt64(pow(2.0, Double(attempt))) * 1_000_000_000)
-            }
+        do {
+            currentWeek = try await api.generateWeek(id)
+        } catch let err as APIError {
+            error = err
+        } catch {
+            self.error = .networkError(error)
         }
-        isLoadingWeek = false
+        isLoading = false
     }
 
     @MainActor
@@ -112,16 +105,27 @@ final class AppState {
 
     // MARK: - Onboarding
 
-    /// Athlet anlegen und verifizieren. Plan wird im Hintergrund geladen.
+    private func currentOrCreatePendingCreateKey() -> String {
+        if let key = pendingCreateKey, !key.isEmpty {
+            return key
+        }
+        let generated = UUID().uuidString.lowercased()
+        pendingCreateKey = generated
+        return generated
+    }
+
+    /// Athlet anlegen. Onboarding gilt bei erfolgreichem Create als abgeschlossen.
     @MainActor
     func finishOnboarding(_ data: AthleteCreate) async throws {
         isLoading = true
         error = nil
 
+        let idempotencyKey = currentOrCreatePendingCreateKey()
+
         // 1. Athlet anlegen
         let created: AthleteResponse
         do {
-            created = try await api.createAthlete(data)
+            created = try await api.createAthlete(data, idempotencyKey: idempotencyKey)
             print("Athlet angelegt: id=\(created.id), name=\(created.name)")
         } catch {
             isLoading = false
@@ -129,30 +133,24 @@ final class AppState {
             throw error
         }
 
-        // 2. Verifizieren: Athlet wirklich in DB?
-        let verified: AthleteResponse
-        do {
-            verified = try await api.getAthlete(created.id)
-            print("Athlet verifiziert: id=\(verified.id)")
-        } catch {
-            isLoading = false
-            print("Athlet NICHT verifiziert: \(error)")
-            throw error
-        }
-
-        // 3. Sofort navigieren — Plan im Hintergrund laden
-        athlete = verified
+        // 2. Onboarding sofort abschließen
+        athleteId = created.id
+        athlete = created
+        currentWeek = nil
+        pendingCreateKey = nil
         isLoading = false
-        athleteId = verified.id  // triggert Navigation zum Dashboard
 
-        // 4. Plan async laden mit Retry (blockiert Navigation nicht)
-        Task { await loadWeek(retries: 3) }
+        // 3. Woche entkoppelt im Hintergrund laden
+        Task { @MainActor in
+            await self.loadWeek()
+        }
     }
 
     /// Logout / Reset
     @MainActor
     func reset() {
         athleteId = nil
+        pendingCreateKey = nil
         athlete = nil
         currentWeek = nil
         history = nil

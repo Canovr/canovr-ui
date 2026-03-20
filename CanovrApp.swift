@@ -28,9 +28,6 @@ struct CanovRApp: App {
                     .background(CanovRTheme.background)
                     .task {
                         await appState.loadAthlete()
-                        if appState.athlete != nil {
-                            await appState.loadWeek(retries: 3)
-                        }
                         // Wenn loadAthlete 404 gibt → reset() → isOnboarded false → Onboarding
                     }
                 } else {

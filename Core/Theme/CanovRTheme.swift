@@ -21,6 +21,7 @@ enum CanovRTheme {
 
     // Text
     static let textPrimary = Color(hex: "1C1C1E")
+    static let primaryBtnText = Color(hex: "ffffff")
     static let textSecondary = Color(hex: "6B6B70")
 
     // Session-Typen
@@ -56,8 +57,8 @@ enum CanovRTheme {
 
     // MARK: - Typografie (Lato)
 
-    static let titleFont = Font.custom("Lato-Bold", size: 28)
-    static let headlineFont = Font.custom("Lato-Bold", size: 22)
+    static let titleFont = Font.custom("Lato-Bold", size: 20)
+    static let headlineFont = Font.custom("Lato-Bold", size: 18)
     static let bodyFont = Font.custom("Lato-Regular", size: 16)
     static let captionFont = Font.custom("Lato-Regular", size: 13)
     static let paceFont = Font.system(size: 18, weight: .semibold, design: .monospaced)
@@ -111,7 +112,7 @@ struct CardStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(.horizontal, 20)
-            .padding(.vertical, 16)
+            .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(elevated ? CanovRTheme.surfaceElevated : CanovRTheme.surface)
     }

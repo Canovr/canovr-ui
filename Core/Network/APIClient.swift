@@ -2,6 +2,8 @@ import Foundation
 
 @Observable
 final class APIClient {
+    private let requestTimeout: TimeInterval = 300
+
     var baseURL: String {
         didSet { UserDefaults.standard.set(baseURL, forKey: "serverURL") }
     }
@@ -13,20 +15,26 @@ final class APIClient {
 
     // MARK: - Generischer Request
 
-    private func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
+    private func request<T: Decodable>(
+        _ endpoint: APIEndpoint,
+        headers extraHeaders: [String: String] = [:]
+    ) async throws -> T {
         guard let url = URL(string: baseURL + endpoint.path) else {
             throw APIError.invalidURL
         }
 
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method
-        request.timeoutInterval = 60
+        request.timeoutInterval = requestTimeout
 
         if let body = endpoint.body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
             request.httpBody = try encoder.encode(AnyEncodable(body))
+        }
+        for (field, value) in extraHeaders {
+            request.setValue(value, forHTTPHeaderField: field)
         }
 
         print(">>> [\(endpoint.method)] \(baseURL + endpoint.path)")
@@ -37,6 +45,9 @@ final class APIClient {
         let (data, response): (Data, URLResponse)
         do {
             (data, response) = try await URLSession.shared.data(for: request)
+        } catch let error as URLError where error.code == .timedOut {
+            print(">>> CLIENT TIMEOUT: \(error)")
+            throw APIError.clientTimeout
         } catch {
             print(">>> NETWORK ERROR: \(error)")
             throw APIError.networkError(error)
@@ -58,6 +69,10 @@ final class APIClient {
             break
         case 404:
             throw APIError.notFound
+        case 429:
+            throw APIError.rateLimited
+        case 504:
+            throw APIError.upstreamTimeout
         default:
             let body = String(data: data, encoding: .utf8)
             throw APIError.httpError(statusCode: httpResponse.statusCode, body: body)
@@ -74,8 +89,15 @@ final class APIClient {
 
     // MARK: - Athletes
 
-    func createAthlete(_ data: AthleteCreate) async throws -> AthleteResponse {
-        try await request(.createAthlete(data))
+    func createAthlete(
+        _ data: AthleteCreate,
+        idempotencyKey: String? = nil
+    ) async throws -> AthleteResponse {
+        var headers: [String: String] = [:]
+        if let idempotencyKey, !idempotencyKey.isEmpty {
+            headers["X-Idempotency-Key"] = idempotencyKey
+        }
+        return try await request(.createAthlete(data), headers: headers)
     }
 
     func getAthlete(_ id: Int) async throws -> AthleteResponse {

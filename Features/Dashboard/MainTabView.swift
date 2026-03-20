@@ -70,8 +70,12 @@ struct MainTabView: View {
         }
         .ignoresSafeArea(.container, edges: .bottom)
         .task {
-            await appState.loadAthlete()
-            await appState.loadWeek()
+            if appState.athlete == nil {
+                await appState.loadAthlete()
+            }
+            if appState.currentWeek == nil {
+                await appState.loadWeek()
+            }
         }
     }
 }

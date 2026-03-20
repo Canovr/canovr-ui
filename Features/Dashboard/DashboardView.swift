@@ -8,7 +8,7 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 8) {
                     // Error Banner
                     if let error = appState.error {
                         ErrorBanner(message: error.localizedDescription) {
@@ -38,8 +38,10 @@ struct DashboardView: View {
                             )
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 20)
+                        //.padding(.horizontal, 20)
+                        .cardStyle()
                     }
+                        
 
                     // Plan loading state
                     if appState.isLoadingWeek && appState.currentWeek == nil {

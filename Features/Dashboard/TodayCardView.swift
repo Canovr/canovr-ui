@@ -82,10 +82,10 @@ struct TodayCardView: View {
                 Button(action: onComplete) {
                     Text("Erledigt")
                         .font(.custom("Lato-Bold", size: 16))
-                        .foregroundStyle(CanovRTheme.textPrimary)
+                        .foregroundStyle(CanovRTheme.primaryBtnText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(CanovRTheme.azure.opacity(0.3))
+                        .background(CanovRTheme.azure.opacity(1))
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .padding(.top, 4)
