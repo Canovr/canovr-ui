@@ -29,6 +29,7 @@ final class AppState {
 
     // UI State
     var isLoading = false
+    var isLoadingWeek = false
     var error: APIError?
 
     let api: APIClient
@@ -76,19 +77,40 @@ final class AppState {
         isLoading = false
     }
 
+    /// Wochenplan laden mit automatischen Retries bei 429/504 (Cloud Run cold starts).
     @MainActor
-    func loadWeek() async {
+    func loadWeek(retries: Int = 3) async {
         guard let id = athleteId else { return }
-        isLoading = true
+        isLoadingWeek = true
         error = nil
-        do {
-            currentWeek = try await api.generateWeek(id)
-        } catch let err as APIError {
-            error = err
-        } catch {
-            self.error = .networkError(error)
+
+        var lastError: APIError?
+        for attempt in 0...retries {
+            if attempt > 0 {
+                // Exponential backoff: 2s, 4s, 8s
+                let delay = UInt64(pow(2.0, Double(attempt))) * 1_000_000_000
+                try? await Task.sleep(nanoseconds: delay)
+            }
+            do {
+                currentWeek = try await api.generateWeek(id)
+                lastError = nil
+                break
+            } catch let err as APIError {
+                lastError = err
+                if case .rateLimited = err { continue }
+                if case .upstreamTimeout = err { continue }
+                if case .clientTimeout = err { continue }
+                break // Andere Fehler nicht retrien
+            } catch {
+                lastError = .networkError(error)
+                break
+            }
         }
-        isLoading = false
+
+        if let lastError {
+            self.error = lastError
+        }
+        isLoadingWeek = false
     }
 
     @MainActor
@@ -140,9 +162,9 @@ final class AppState {
         pendingCreateKey = nil
         isLoading = false
 
-        // 3. Woche entkoppelt im Hintergrund laden
+        // 3. Woche entkoppelt im Hintergrund laden (mit Retries für Cold Starts)
         Task { @MainActor in
-            await self.loadWeek()
+            await self.loadWeek(retries: 3)
         }
     }
 
@@ -154,5 +176,6 @@ final class AppState {
         athlete = nil
         currentWeek = nil
         history = nil
+        isLoadingWeek = false
     }
 }
