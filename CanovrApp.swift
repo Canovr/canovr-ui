@@ -29,7 +29,7 @@ struct CanovRApp: App {
                     .task {
                         await appState.loadAthlete()
                         if appState.athlete != nil {
-                            await appState.loadWeek()
+                            await appState.loadWeek(retries: 3)
                         }
                         // Wenn loadAthlete 404 gibt → reset() → isOnboarded false → Onboarding
                     }

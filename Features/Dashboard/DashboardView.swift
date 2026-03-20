@@ -41,6 +41,23 @@ struct DashboardView: View {
                         .padding(.horizontal, 20)
                     }
 
+                    // Plan loading state
+                    if appState.isLoadingWeek && appState.currentWeek == nil {
+                        VStack(spacing: 12) {
+                            ProgressView()
+                                .tint(CanovRTheme.azure)
+                            Text("Wochenplan wird erstellt...")
+                                .font(CanovRTheme.bodyFont)
+                                .foregroundStyle(CanovRTheme.textSecondary)
+                            Text("PyReason berechnet deinen optimalen Plan")
+                                .font(CanovRTheme.captionFont)
+                                .foregroundStyle(CanovRTheme.textSecondary.opacity(0.7))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 32)
+                        .cardStyle()
+                    }
+
                     // Today Card
                     if let today = appState.todayWorkout {
                         TodayCardView(day: today) {
@@ -118,7 +135,7 @@ struct DashboardView: View {
             .background(CanovRTheme.background)
             .refreshable {
                 await appState.loadAthlete()
-                await appState.loadWeek()
+                await appState.loadWeek(retries: 2)
             }
             .sheet(isPresented: $showLogWorkout) {
                 LogWorkoutSheet()
