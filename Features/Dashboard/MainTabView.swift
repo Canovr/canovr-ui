@@ -73,9 +73,7 @@ struct MainTabView: View {
             if appState.athlete == nil {
                 await appState.loadAthlete()
             }
-            if appState.currentWeek == nil {
-                await appState.loadWeek()
-            }
+            // loadWeek wird in DashboardView geladen, nicht hier (sonst doppelter Call)
         }
     }
 }
