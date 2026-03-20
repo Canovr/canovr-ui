@@ -135,6 +135,11 @@ struct DashboardView: View {
                 .padding(.vertical, 16)
             }
             .background(CanovRTheme.background)
+            .task {
+                if appState.currentWeek == nil {
+                    await appState.loadWeek(retries: 3)
+                }
+            }
             .refreshable {
                 await appState.loadAthlete()
                 await appState.loadWeek(retries: 2)

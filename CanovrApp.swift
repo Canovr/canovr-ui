@@ -29,9 +29,8 @@ struct CanovRApp: App {
                     .task {
                         await appState.loadAthlete()
                         // Wenn loadAthlete 404 gibt → reset() → isOnboarded false → Onboarding
-                        if appState.isOnboarded {
-                            await appState.loadWeek(retries: 3)
-                        }
+                        // loadWeek wird in DashboardView geladen, nicht hier —
+                        // sonst cancelled SwiftUI den Task beim View-Wechsel.
                     }
                 } else {
                     OnboardingFlow()
