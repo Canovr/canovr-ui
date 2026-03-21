@@ -12,7 +12,7 @@ struct WeekOverviewBar: View {
                 VStack(spacing: 6) {
                     // Punkt
                     Circle()
-                        .fill(CanovRTheme.sessionColor(day.sessionType))
+                        .fill(Color(hex: "DBEAFE"))
                         .frame(width: 32, height: 32)
                         .overlay {
                             if day.sessionType == "rest" {
@@ -28,7 +28,7 @@ struct WeekOverviewBar: View {
                         .overlay {
                             if day.dayIndex == todayIndex {
                                 Circle()
-                                    .stroke(CanovRTheme.azure, lineWidth: 2)
+                                    .stroke(Color(hex: "3B82F6"), lineWidth: 2)
                                     .frame(width: 38, height: 38)
                             }
                         }
@@ -38,7 +38,7 @@ struct WeekOverviewBar: View {
                         .font(.custom(day.dayIndex == todayIndex ? "Lato-Bold" : "Lato-Regular", size: 11))
                         .foregroundStyle(
                             day.dayIndex == todayIndex
-                                ? CanovRTheme.azure
+                                ? Color(hex: "3B82F6")
                                 : CanovRTheme.textSecondary
                         )
                 }
