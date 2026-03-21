@@ -9,12 +9,12 @@
 /* Begin PBXFileReference section */
 		54054B5A2F6B2D1600F99C47 /* canovr-ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "canovr-ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54054CE32F6DF66800F99C47 /* canovr-ios-app.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "canovr-ios-app.xcodeproj"; sourceTree = "<group>"; };
+		54054DBE2F6DFFAA00F99C47 /* canovr-ios-app.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "canovr-ios-app.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		54054B5C2F6B2D1600F99C47 /*  */ = {
+		54054B5C2F6B2D1600F99C47 = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			name = "";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -33,7 +33,7 @@
 		54054B512F6B2D1600F99C47 = {
 			isa = PBXGroup;
 			children = (
-				54054B5C2F6B2D1600F99C47 /*  */,
+				54054B5C2F6B2D1600F99C47,
 				54054B5B2F6B2D1600F99C47 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -47,6 +47,11 @@
 			sourceTree = "<group>";
 		};
 		54054CE52F6DF66800F99C47 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		54054DC02F6DFFAA00F99C47 /* Products */ = {
 			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
@@ -67,7 +72,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				54054B5C2F6B2D1600F99C47 /*  */,
+				54054B5C2F6B2D1600F99C47,
 			);
 			name = "canovr-ios-app";
 			packageProductDependencies = (
@@ -104,6 +109,10 @@
 			productRefGroup = 54054B5B2F6B2D1600F99C47 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 54054DC02F6DFFAA00F99C47 /* Products */;
+					ProjectRef = 54054DBE2F6DFFAA00F99C47 /* canovr-ios-app.xcodeproj */;
+				},
 				{
 					ProductGroup = 54054CE52F6DF66800F99C47 /* Products */;
 					ProjectRef = 54054CE32F6DF66800F99C47 /* canovr-ios-app.xcodeproj */;

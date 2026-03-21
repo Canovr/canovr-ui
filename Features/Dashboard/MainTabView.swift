@@ -43,17 +43,16 @@ struct MainTabView: View {
 
                 Spacer()
 
-                Text("CANOVR")
-                    .font(CanovRTheme.logoFont)
-                    .foregroundStyle(CanovRTheme.primary)
-
-                Spacer()
-
                 // Current view name (right)
                 Text(selectedTab.label)
                     .font(.custom("Lato-Bold", size: 14))
                     .foregroundStyle(CanovRTheme.textSecondary)
                     .padding(.trailing, 16)
+            }
+            .overlay {
+                Text("CANOVR")
+                    .font(CanovRTheme.logoFont)
+                    .foregroundStyle(CanovRTheme.primary)
             }
             .padding(.vertical, 10)
             .background(CanovRTheme.surface)
