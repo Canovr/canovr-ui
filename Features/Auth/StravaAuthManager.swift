@@ -19,6 +19,9 @@ final class StravaAuthManager: NSObject {
     @MainActor
     func authenticate() async throws -> String {
         let redirectURI = "https://\(callbackDomain)/auth/strava/callback"
+        guard let callbackScheme = URL(string: redirectURI)?.scheme else {
+            throw AuthError.invalidURL
+        }
         let scope = "profile:read_all"
 
         guard var components = URLComponents(string: "https://www.strava.com/oauth/mobile/authorize") else {
@@ -42,7 +45,7 @@ final class StravaAuthManager: NSObject {
         return try await withCheckedThrowingContinuation { continuation in
             let session = ASWebAuthenticationSession(
                 url: authURL,
-                callbackURLScheme: "canovr"
+                callbackURLScheme: callbackScheme
             ) { callbackURL, error in
                 if let error {
                     if (error as NSError).code == ASWebAuthenticationSessionError.canceledLogin.rawValue {
@@ -54,6 +57,8 @@ final class StravaAuthManager: NSObject {
                 }
 
                 guard let callbackURL,
+                      callbackURL.host == self.callbackDomain,
+                      callbackURL.path == "/auth/strava/callback",
                       let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
                       let code = components.queryItems?.first(where: { $0.name == "code" })?.value else {
                     continuation.resume(throwing: AuthError.noCode)

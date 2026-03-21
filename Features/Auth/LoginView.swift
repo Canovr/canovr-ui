@@ -143,7 +143,7 @@ struct LoginView: View {
                 authState.needsOnboarding = response.needsOnboarding
                 authState.stravaProfile = response.stravaProfile
             }
-        } catch is StravaAuthManager.AuthError where (error as? StravaAuthManager.AuthError) == .cancelled {
+        } catch StravaAuthManager.AuthError.cancelled {
             // User hat abgebrochen — nichts tun
         } catch {
             self.error = error.localizedDescription
