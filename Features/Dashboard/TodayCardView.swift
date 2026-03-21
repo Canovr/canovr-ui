@@ -3,6 +3,7 @@ import SwiftUI
 struct TodayCardView: View {
     let day: DayPlan
     let onComplete: () -> Void
+    var isCompleted: Bool = false
 
     private var isHard: Bool {
         ["hard", "moderate", "long_run"].contains(day.sessionType)
@@ -79,16 +80,30 @@ struct TodayCardView: View {
                     .frame(height: 28)
                 }
 
-                Button(action: onComplete) {
-                    Text("Erledigt")
-                        .font(.custom("Lato-Bold", size: 16))
-                        .foregroundStyle(CanovRTheme.primaryBtnText)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(CanovRTheme.azure.opacity(1))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                if isCompleted {
+                    // Completed feedback
+                    HStack(spacing: 8) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(CanovRTheme.longRun)
+                        Text("Erledigt")
+                            .font(.custom("Lato-Bold", size: 16))
+                            .foregroundStyle(CanovRTheme.longRun)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                } else {
+                    Button(action: onComplete) {
+                        Text("Erledigt")
+                            .font(.custom("Lato-Bold", size: 16))
+                            .foregroundStyle(CanovRTheme.primaryBtnText)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(CanovRTheme.azure.opacity(1))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .padding(.top, 4)
                 }
-                .padding(.top, 4)
             }
         }
         .padding(.horizontal, 20)

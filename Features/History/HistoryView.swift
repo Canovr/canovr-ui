@@ -6,48 +6,41 @@ struct HistoryView: View {
     @State private var selectedTab = 0
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // Segmented Control
-                Picker("", selection: $selectedTab) {
-                    Text("Workouts").tag(0)
-                    Text("Rennen").tag(1)
-                    Text("Pace").tag(2)
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
+        VStack(spacing: 0) {
+            // Segmented Control
+            Picker("", selection: $selectedTab) {
+                Text("Workouts").tag(0)
+                Text("Rennen").tag(1)
+                Text("Pace").tag(2)
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
 
-                // Content
-                ScrollView {
-                    switch selectedTab {
-                    case 0:
-                        workoutsTab
-                    case 1:
-                        racesTab
-                    case 2:
-                        paceTab
-                    default:
-                        EmptyView()
-                    }
+            // Content
+            ScrollView {
+                switch selectedTab {
+                case 0:
+                    workoutsTab
+                case 1:
+                    racesTab
+                case 2:
+                    paceTab
+                default:
+                    EmptyView()
                 }
             }
-            .background(CanovRTheme.background)
-            .navigationTitle("Verlauf")
-            .navigationBarTitleDisplayMode(.inline)
-            .task {
-                await appState.loadHistory()
-            }
-            .refreshable {
-                await appState.loadHistory()
-            }
+        }
+        .background(CanovRTheme.background)
+        .task {
+            await appState.loadHistory()
         }
     }
 
     // MARK: - Workouts Tab
 
     private var workoutsTab: some View {
-        LazyVStack(spacing: 8) {
+        LazyVStack(spacing: 12) {
             if let workouts = appState.history?.workouts, !workouts.isEmpty {
                 ForEach(workouts) { workout in
                     HStack {
@@ -84,7 +77,7 @@ struct HistoryView: View {
     // MARK: - Races Tab
 
     private var racesTab: some View {
-        LazyVStack(spacing: 8) {
+        LazyVStack(spacing: 12) {
             if let races = appState.history?.races, !races.isEmpty {
                 ForEach(races) { race in
                     HStack {
@@ -118,7 +111,7 @@ struct HistoryView: View {
     // MARK: - Pace Chart Tab
 
     private var paceTab: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             if let paces = appState.history?.paceHistory, !paces.isEmpty {
                 Chart(paces) { entry in
                     PointMark(

@@ -8,7 +8,7 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 8) {
+                VStack(spacing: 12) {
                     // Error Banner
                     if let error = appState.error {
                         ErrorBanner(message: error.localizedDescription) {
@@ -38,10 +38,9 @@ struct DashboardView: View {
                             )
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        //.padding(.horizontal, 20)
                         .cardStyle()
                     }
-                        
+
 
                     // Plan loading state
                     if appState.isLoadingWeek && appState.currentWeek == nil {
@@ -62,9 +61,11 @@ struct DashboardView: View {
 
                     // Today Card
                     if let today = appState.todayWorkout {
-                        TodayCardView(day: today) {
-                            showLogWorkout = true
-                        }
+                        TodayCardView(
+                            day: today,
+                            onComplete: { showLogWorkout = true },
+                            isCompleted: appState.todayCompleted
+                        )
                     }
 
                     // Week Overview
@@ -141,6 +142,7 @@ struct DashboardView: View {
                 }
             }
             .refreshable {
+                appState.todayCompleted = false
                 await appState.loadAthlete()
                 await appState.loadWeek(retries: 2)
             }

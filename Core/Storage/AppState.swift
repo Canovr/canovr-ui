@@ -31,6 +31,7 @@ final class AppState {
     var isLoading = false
     var isLoadingWeek = false
     var error: APIError?
+    var todayCompleted = false
 
     let api: APIClient
 
@@ -195,5 +196,6 @@ final class AppState {
         currentWeek = nil
         history = nil
         isLoadingWeek = false
+        todayCompleted = false
     }
 }
