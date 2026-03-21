@@ -79,6 +79,10 @@ final class AppState {
                     reset()
                     return
                 }
+                if case .unauthorized = err {
+                    // Token abgelaufen und Refresh fehlgeschlagen
+                    return
+                }
                 lastError = err
                 if case .rateLimited = err { continue }
                 if case .upstreamTimeout = err { continue }

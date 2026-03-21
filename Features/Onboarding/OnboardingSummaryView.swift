@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingSummaryView: View {
     @Environment(AppState.self) private var appState
+    @Environment(AuthState.self) private var authState
     let data: OnboardingData
 
     @State private var isCreating = false
@@ -124,6 +125,9 @@ struct OnboardingSummaryView: View {
         error = nil
         do {
             try await appState.finishOnboarding(data.toAthleteCreate())
+            await MainActor.run {
+                authState.needsOnboarding = false
+            }
             print("=== ONBOARDING: Erfolgreich! ===")
         } catch let apiError as APIError {
             print("=== ONBOARDING FEHLER (API): \(apiError) ===")
