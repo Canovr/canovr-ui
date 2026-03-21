@@ -3,20 +3,31 @@ import CoreText
 
 @main
 struct CanovRApp: App {
-    @State private var appState = AppState()
+    @State private var authState = AuthState()
+    @State private var appState: AppState
 
     init() {
         FontRegistrar.registerAppFonts()
+        let auth = AuthState()
+        let api = APIClient(authState: auth)
+        self._authState = State(initialValue: auth)
+        self._appState = State(initialValue: AppState(api: api))
     }
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if appState.isOnboarded {
+                if !authState.isAuthenticated {
+                    // State 1: Nicht eingeloggt → Login
+                    LoginView()
+                } else if authState.needsOnboarding {
+                    // State 2: Eingeloggt, aber kein Athlete → Onboarding
+                    OnboardingFlow()
+                } else if appState.isOnboarded {
+                    // State 3: Eingeloggt + Athlete geladen → Dashboard
                     MainTabView()
                 } else if appState.athleteId != nil && appState.athlete == nil {
-                    // athleteId in UserDefaults, aber Athlet noch nicht geladen
-                    // → Server-Check läuft, Ladescreen zeigen
+                    // Athlete laden
                     VStack(spacing: 16) {
                         ProgressView()
                             .tint(CanovRTheme.primary)
@@ -28,15 +39,47 @@ struct CanovRApp: App {
                     .background(CanovRTheme.background)
                     .task {
                         await appState.loadAthlete()
-                        // Wenn loadAthlete 404 gibt → reset() → isOnboarded false → Onboarding
-                        // loadWeek wird in DashboardView geladen, nicht hier —
-                        // sonst cancelled SwiftUI den Task beim View-Wechsel.
                     }
                 } else {
-                    OnboardingFlow()
+                    // Authentifiziert, User-Info laden → prüfen ob Athlete existiert
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .tint(CanovRTheme.primary)
+                        Text("Lade Profil...")
+                            .font(CanovRTheme.bodyFont)
+                            .foregroundStyle(CanovRTheme.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(CanovRTheme.background)
+                    .task {
+                        await checkUserState()
+                    }
                 }
             }
             .environment(appState)
+            .environment(authState)
+        }
+    }
+
+    private func checkUserState() async {
+        do {
+            let userInfo = try await appState.api.getMe()
+            await MainActor.run {
+                if userInfo.hasAthlete {
+                    // User hat Athlete → ID ist noch nicht bekannt, lade über /me
+                    // Wir brauchen die athlete_id. Setze needsOnboarding auf false
+                    // und lade den Athlete. Da wir die ID nicht direkt haben,
+                    // speichern wir sie aus dem früheren Flow.
+                    authState.needsOnboarding = false
+                } else {
+                    authState.needsOnboarding = true
+                }
+            }
+        } catch {
+            // Token ungültig → Logout
+            await MainActor.run {
+                authState.clearTokens()
+            }
         }
     }
 }

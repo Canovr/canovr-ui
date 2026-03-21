@@ -9,6 +9,7 @@ enum APIError: LocalizedError {
     case httpError(statusCode: Int, body: String?)
     case decodingError(Error)
     case notFound
+    case unauthorized
     case serverError
 
     var errorDescription: String? {
@@ -29,6 +30,8 @@ enum APIError: LocalizedError {
             return "Fehler beim Verarbeiten der Server-Antwort"
         case .notFound:
             return "Nicht gefunden"
+        case .unauthorized:
+            return "Sitzung abgelaufen. Bitte erneut anmelden."
         case .serverError:
             return "Interner Server-Fehler"
         }

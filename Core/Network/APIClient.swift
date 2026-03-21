@@ -3,21 +3,28 @@ import Foundation
 @Observable
 final class APIClient {
     private let requestTimeout: TimeInterval = 300
+    private weak var authState: AuthState?
 
     var baseURL: String {
         didSet { UserDefaults.standard.set(baseURL, forKey: "serverURL") }
     }
 
-    init() {
+    init(authState: AuthState? = nil) {
         self.baseURL = UserDefaults.standard.string(forKey: "serverURL")
             ?? "https://canovr-354203175068.europe-west3.run.app"
+        self.authState = authState
+    }
+
+    func setAuthState(_ authState: AuthState) {
+        self.authState = authState
     }
 
     // MARK: - Generischer Request
 
     private func request<T: Decodable>(
         _ endpoint: APIEndpoint,
-        headers extraHeaders: [String: String] = [:]
+        headers extraHeaders: [String: String] = [:],
+        skipTokenRefresh: Bool = false
     ) async throws -> T {
         guard let url = URL(string: baseURL + endpoint.path) else {
             throw APIError.invalidURL
@@ -33,6 +40,12 @@ final class APIClient {
             encoder.keyEncodingStrategy = .convertToSnakeCase
             request.httpBody = try encoder.encode(AnyEncodable(body))
         }
+
+        // Auth Header
+        if endpoint.requiresAuth, let token = authState?.accessToken {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
         for (field, value) in extraHeaders {
             request.setValue(value, forHTTPHeaderField: field)
         }
@@ -64,9 +77,20 @@ final class APIClient {
             throw APIError.serverError
         }
 
+        // 401 → Token Refresh versuchen
+        if httpResponse.statusCode == 401 && endpoint.requiresAuth && !skipTokenRefresh {
+            if try await attemptTokenRefresh() {
+                // Retry mit neuem Token
+                return try await self.request(endpoint, headers: extraHeaders, skipTokenRefresh: true)
+            }
+            throw APIError.unauthorized
+        }
+
         switch httpResponse.statusCode {
         case 200...299:
             break
+        case 401:
+            throw APIError.unauthorized
         case 404:
             throw APIError.notFound
         case 429:
@@ -85,6 +109,56 @@ final class APIClient {
         } catch {
             throw APIError.decodingError(error)
         }
+    }
+
+    // MARK: - Token Refresh
+
+    private func attemptTokenRefresh() async throws -> Bool {
+        guard let refreshToken = authState?.refreshToken else {
+            return false
+        }
+
+        do {
+            let response: AuthResponse = try await request(
+                .refreshToken(RefreshTokenRequest(refreshToken: refreshToken)),
+                skipTokenRefresh: true
+            )
+            await MainActor.run {
+                authState?.setTokens(access: response.accessToken, refresh: response.refreshToken)
+            }
+            return true
+        } catch {
+            // Refresh fehlgeschlagen → Logout
+            await MainActor.run {
+                authState?.clearTokens()
+            }
+            return false
+        }
+    }
+
+    // MARK: - Auth
+
+    func stravaAuth(code: String) async throws -> AuthResponse {
+        try await request(.stravaAuth(StravaAuthRequest(code: code)))
+    }
+
+    func emailLogin(email: String, password: String) async throws -> AuthResponse {
+        try await request(.emailLogin(EmailLoginRequest(email: email, password: password)))
+    }
+
+    func emailRegister(email: String, password: String, name: String) async throws -> AuthResponse {
+        try await request(.emailRegister(EmailRegisterRequest(email: email, password: password, name: name)))
+    }
+
+    func logout() async {
+        guard let refreshToken = authState?.refreshToken else { return }
+        _ = try? await request(
+            .logout(RefreshTokenRequest(refreshToken: refreshToken))
+        ) as [String: String]
+    }
+
+    func getMe() async throws -> UserInfo {
+        try await request(.getMe)
     }
 
     // MARK: - Athletes

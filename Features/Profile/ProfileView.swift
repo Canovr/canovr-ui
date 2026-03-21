@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(AppState.self) private var appState
+    @Environment(AuthState.self) private var authState
     @State private var showEdit = false
     @State private var showServerConfig = false
 
@@ -93,11 +94,17 @@ struct ProfileView: View {
                     }
                     .cardStyle()
 
-                    // Reset only
+                    // Logout
                     Button(role: .destructive) {
-                        appState.reset()
+                        Task {
+                            await appState.api.logout()
+                            await MainActor.run {
+                                appState.reset()
+                                authState.clearTokens()
+                            }
+                        }
                     } label: {
-                        Label("Profil zurücksetzen", systemImage: "trash")
+                        Label("Abmelden", systemImage: "rectangle.portrait.and.arrow.right")
                             .font(.custom("Lato-Regular", size: 14))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
