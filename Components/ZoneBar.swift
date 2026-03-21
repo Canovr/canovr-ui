@@ -15,7 +15,7 @@ struct ZoneBar: View {
 
                 RoundedRectangle(cornerRadius: 3)
                     .fill(CanovRTheme.zoneColor(percentage: pct))
-                    .opacity(highlightedZone == nil || isHighlighted ? 1.0 : 0.25)
+                    .opacity(highlightedZone == nil || isHighlighted ? 1.0 : 0.4)
                     .frame(height: isHighlighted ? 28 : 20)
                     .overlay {
                         if isHighlighted {

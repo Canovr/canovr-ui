@@ -30,18 +30,20 @@ enum CanovRTheme {
     static let longRun = Color(hex: "30D158")
     static let restDay = Color(hex: "C7C7CC")
 
-    // Zonen-Farben (z80 grün → z100 blau → z115 rot)
+    // Zonen-Farben (opacity-basiert auf primary)
     static func zoneColor(percentage: Int) -> Color {
+        let opacity: Double
         switch percentage {
-        case ...80:  return Color(hex: "30D158")
-        case 85:     return Color(hex: "34C759")
-        case 90:     return Color(hex: "60A5FA")
-        case 95:     return Color(hex: "3B82F6")
-        case 100:    return primary
-        case 105:    return Color(hex: "FF9500")
-        case 110:    return Color(hex: "FF6B35")
-        default:     return Color(hex: "FF3B30")
+        case ...80:  opacity = 0.25
+        case 85:     opacity = 0.35
+        case 90:     opacity = 0.45
+        case 95:     opacity = 0.60
+        case 100:    opacity = 0.75
+        case 105:    opacity = 0.85
+        case 110:    opacity = 0.92
+        default:     opacity = 1.00
         }
+        return primary.opacity(opacity)
     }
 
     // Session-Typ → Farbe
