@@ -7,7 +7,7 @@ enum Tab: Int, CaseIterable {
         switch self {
         case .training: return "flame"
         case .history:  return "chart.bar"
-        case .profile:  return "person"
+        case .profile:  return "gearshape"
         }
     }
 
@@ -23,16 +23,37 @@ enum Tab: Int, CaseIterable {
 struct MainTabView: View {
     @Environment(AppState.self) private var appState
     @State private var selectedTab: Tab = .training
+    @State private var navigationPath = NavigationPath()
 
     var body: some View {
         VStack(spacing: 0) {
             // Top Nav
             HStack {
+                // Back button (left)
+                if !navigationPath.isEmpty {
+                    Button {
+                        navigationPath.removeLast()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(CanovRTheme.primary)
+                    }
+                    .padding(.leading, 16)
+                }
+
                 Spacer()
+
                 Text("CANOVR")
                     .font(CanovRTheme.logoFont)
                     .foregroundStyle(CanovRTheme.primary)
+
                 Spacer()
+
+                // Current view name (right)
+                Text(selectedTab.label)
+                    .font(.custom("Lato-Bold", size: 14))
+                    .foregroundStyle(CanovRTheme.textSecondary)
+                    .padding(.trailing, 16)
             }
             .padding(.vertical, 10)
             .background(CanovRTheme.surface)
@@ -73,7 +94,6 @@ struct MainTabView: View {
             if appState.athlete == nil {
                 await appState.loadAthlete()
             }
-            // loadWeek wird in DashboardView geladen, nicht hier (sonst doppelter Call)
         }
     }
 }

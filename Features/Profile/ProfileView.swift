@@ -17,123 +17,108 @@ struct ProfileView: View {
     ]
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                if let athlete = appState.athlete {
-                    VStack(spacing: 20) {
-                        // Athlete Card
-                        VStack(spacing: 12) {
-                            Image(systemName: "figure.run")
-                                .font(.system(size: 40))
-                                .foregroundStyle(CanovRTheme.azure)
-
+        ScrollView {
+            if let athlete = appState.athlete {
+                VStack(spacing: 12) {
+                    // Athlete Card
+                    VStack(spacing: 12) {
+                        HStack {
                             Text(athlete.name)
                                 .font(CanovRTheme.headlineFont)
                                 .foregroundStyle(CanovRTheme.textPrimary)
 
-                            HStack(spacing: 16) {
-                                ProfileStat(
-                                    label: DistanceOption.all.first { $0.id == athlete.targetDistance }?.label ?? athlete.targetDistance,
-                                    value: athlete.racePace
-                                )
-                                ProfileStat(label: "Woche", value: "\(Int(athlete.weeklyKm)) km")
-                                ProfileStat(label: "Erfahrung", value: "\(athlete.experienceYears) J.")
-                            }
+                            Spacer()
 
-                            PhaseIndicator(
-                                phase: athlete.currentPhase,
-                                week: athlete.weekInPhase,
-                                total: athlete.phaseWeeksTotal
-                            )
-                        }
-                        .cardStyle()
-
-                        // Pace Zones
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Pace-Zonen")
-                                .font(.custom("Lato-Bold", size: 18))
-                                .foregroundStyle(CanovRTheme.textPrimary)
-
-                            let sortedZones = athlete.paceZones.sorted { a, b in
-                                let aNum = Int(a.key.dropFirst()) ?? 0
-                                let bNum = Int(b.key.dropFirst()) ?? 0
-                                return aNum < bNum
-                            }
-
-                            ForEach(sortedZones, id: \.key) { zone, pace in
-                                let pct = Int(zone.dropFirst()) ?? 100
-                                HStack(spacing: 12) {
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .fill(CanovRTheme.zoneColor(percentage: pct))
-                                        .frame(width: 6, height: 36)
-
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(zone)
-                                            .font(.custom("Lato-Bold", size: 15))
-                                            .foregroundStyle(CanovRTheme.textPrimary)
-                                        Text(zoneRoles[pct] ?? "")
-                                            .font(.custom("Lato-Regular", size: 11))
-                                            .foregroundStyle(CanovRTheme.textSecondary)
-                                    }
-
-                                    Spacer()
-
-                                    Text(pace)
-                                        .font(CanovRTheme.paceFont)
-                                        .foregroundStyle(CanovRTheme.textPrimary)
-                                }
-                            }
-                        }
-                        .cardStyle()
-
-                        // Actions
-                        VStack(spacing: 12) {
                             Button {
                                 showEdit = true
                             } label: {
-                                Label("Profil bearbeiten", systemImage: "pencil")
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
+                                Image(systemName: "gearshape")
+                                    .font(.system(size: 18, weight: .medium))
+                                    .foregroundStyle(CanovRTheme.textSecondary)
                             }
-                            .buttonStyle(.bordered)
-                            .tint(CanovRTheme.azure)
-
-                            Button {
-                                showServerConfig = true
-                            } label: {
-                                Label("Server-URL", systemImage: "server.rack")
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(CanovRTheme.textSecondary)
-
-                            Button(role: .destructive) {
-                                appState.reset()
-                            } label: {
-                                Label("Profil zurücksetzen", systemImage: "trash")
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                            }
-                            .buttonStyle(.bordered)
                         }
-                        .padding(.horizontal, 20)
+
+                        HStack(spacing: 16) {
+                            ProfileStat(
+                                label: DistanceOption.all.first { $0.id == athlete.targetDistance }?.label ?? athlete.targetDistance,
+                                value: athlete.racePace
+                            )
+                            ProfileStat(label: "Woche", value: "\(Int(athlete.weeklyKm)) km")
+                            ProfileStat(label: "Erfahrung", value: "\(athlete.experienceYears) J.")
+                        }
+
+                        PhaseIndicator(
+                            phase: athlete.currentPhase,
+                            week: athlete.weekInPhase,
+                            total: athlete.phaseWeeksTotal
+                        )
                     }
-                    .padding(.vertical, 16)
+                    .cardStyle()
+
+                    // Pace Zones
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Pace-Zonen")
+                            .font(.custom("Lato-Bold", size: 18))
+                            .foregroundStyle(CanovRTheme.textPrimary)
+
+                        let sortedZones = athlete.paceZones.sorted { a, b in
+                            let aNum = Int(a.key.dropFirst()) ?? 0
+                            let bNum = Int(b.key.dropFirst()) ?? 0
+                            return aNum < bNum
+                        }
+
+                        ForEach(sortedZones, id: \.key) { zone, pace in
+                            let pct = Int(zone.dropFirst()) ?? 100
+                            HStack(spacing: 12) {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(CanovRTheme.zoneColor(percentage: pct))
+                                    .frame(width: 6, height: 36)
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(zone)
+                                        .font(.custom("Lato-Bold", size: 15))
+                                        .foregroundStyle(CanovRTheme.textPrimary)
+                                    Text(zoneRoles[pct] ?? "")
+                                        .font(.custom("Lato-Regular", size: 11))
+                                        .foregroundStyle(CanovRTheme.textSecondary)
+                                }
+
+                                Spacer()
+
+                                Text(pace)
+                                    .font(CanovRTheme.paceFont)
+                                    .foregroundStyle(CanovRTheme.textPrimary)
+                            }
+                        }
+                    }
+                    .cardStyle()
+
+                    // Reset only
+                    Button(role: .destructive) {
+                        appState.reset()
+                    } label: {
+                        Label("Profil zurücksetzen", systemImage: "trash")
+                            .font(.custom("Lato-Regular", size: 14))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.red.opacity(0.7))
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
                 }
+                .padding(.vertical, 16)
             }
-            .background(CanovRTheme.background)
-            .navigationTitle("Profil")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showEdit) {
-                EditProfileSheet()
-            }
-            .sheet(isPresented: $showServerConfig) {
-                ServerConfigSheet()
-            }
-            .refreshable {
-                await appState.loadAthlete()
-            }
+        }
+        .background(CanovRTheme.background)
+        .sheet(isPresented: $showEdit) {
+            EditProfileSheet()
+        }
+        .sheet(isPresented: $showServerConfig) {
+            ServerConfigSheet()
+        }
+        .refreshable {
+            await appState.loadAthlete()
         }
     }
 }

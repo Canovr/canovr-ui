@@ -17,10 +17,6 @@ struct SessionTypeBadge: View {
     var body: some View {
         Text(label)
             .font(.custom("Lato-Bold", size: 12))
-            .foregroundStyle(CanovRTheme.textPrimary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .background(CanovRTheme.sessionColor(type))
-            .clipShape(Capsule())
+            .foregroundStyle(CanovRTheme.textSecondary)
     }
 }

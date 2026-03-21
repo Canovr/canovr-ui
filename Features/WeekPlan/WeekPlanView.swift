@@ -6,7 +6,7 @@ struct WeekPlanView: View {
     var body: some View {
         ScrollView {
             if let week = appState.currentWeek {
-                VStack(spacing: 16) {
+                VStack(spacing: 12) {
                     // Summary Header
                     HStack {
                         PhaseIndicator(
