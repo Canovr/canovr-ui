@@ -11,7 +11,7 @@ struct LoginView: View {
     @State private var error: String?
 
     @State private var stravaManager = StravaAuthManager(
-        clientId: "YOUR_STRAVA_CLIENT_ID",
+        clientId: "214640",
         callbackDomain: "canovr-354203175068.europe-west3.run.app"
     )
 
