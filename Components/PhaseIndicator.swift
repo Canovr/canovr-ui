@@ -7,22 +7,30 @@ struct PhaseIndicator: View {
 
     private var phaseLabel: String {
         switch phase {
-        case "general":    return "General"
-        case "supportive": return "Supportive"
-        case "specific":   return "Specific"
+        case "general":    return String(localized: "General")
+        case "supportive": return String(localized: "Supportive")
+        case "specific":   return String(localized: "Specific")
         default:           return phase
         }
     }
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: CanovRTheme.spacingSM) {
             Text(phaseLabel)
-                .font(.custom("Lato-Bold", size: 13))
-                .foregroundStyle(CanovRTheme.textPrimary)
+                .font(CanovRTheme.lato(13, weight: .bold))
+                .foregroundStyle(CanovRTheme.primary)
+                .padding(.horizontal, CanovRTheme.spacingSM)
+                .padding(.vertical, CanovRTheme.spacingXS)
+                .background(CanovRTheme.primaryLight.opacity(0.5))
+                .overlay(
+                    RoundedRectangle(cornerRadius: CanovRTheme.radiusSM)
+                        .stroke(CanovRTheme.primary, lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: CanovRTheme.radiusSM))
 
             Text("Woche \(week)/\(total)")
                 .font(CanovRTheme.captionFont)
-                .foregroundStyle(CanovRTheme.textSecondary)
+                .foregroundStyle(CanovRTheme.textTertiary)
         }
     }
 }

@@ -8,26 +8,26 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 12) {
+                VStack(spacing: CanovRTheme.spacingMD) {
                     // Error Banner
                     if let error = appState.error {
                         ErrorBanner(message: error.localizedDescription) {
                             appState.error = nil
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, CanovRTheme.spacingXL)
                     }
 
                     // Loading
                     if appState.isLoading {
                         ProgressView()
-                            .tint(CanovRTheme.azure)
-                            .padding(.top, 8)
+                            .tint(CanovRTheme.primary)
+                            .padding(.top, CanovRTheme.spacingSM)
                     }
 
                     // Header
                     if let athlete = appState.athlete {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Hallo, \(athlete.name)")
+                        VStack(alignment: .leading, spacing: CanovRTheme.spacingSM) {
+                            Text("Hallo, \(athlete.name)!")
                                 .font(CanovRTheme.titleFont)
                                 .foregroundStyle(CanovRTheme.textPrimary)
 
@@ -37,25 +37,23 @@ struct DashboardView: View {
                                 total: athlete.phaseWeeksTotal
                             )
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                         .cardStyle()
                     }
 
-
                     // Plan loading state
                     if appState.isLoadingWeek && appState.currentWeek == nil {
-                        VStack(spacing: 12) {
+                        VStack(spacing: CanovRTheme.spacingMD) {
                             ProgressView()
-                                .tint(CanovRTheme.azure)
+                                .tint(CanovRTheme.primary)
                             Text("Wochenplan wird erstellt...")
                                 .font(CanovRTheme.bodyFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)
                             Text("PyReason berechnet deinen optimalen Plan")
                                 .font(CanovRTheme.captionFont)
-                                .foregroundStyle(CanovRTheme.textSecondary.opacity(0.7))
+                                .foregroundStyle(CanovRTheme.textTertiary)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 32)
+                        .padding(.vertical, CanovRTheme.spacingXXL)
                         .cardStyle()
                     }
 
@@ -70,13 +68,13 @@ struct DashboardView: View {
 
                     // Week Overview
                     if let week = appState.currentWeek {
-                        VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: CanovRTheme.spacingMD) {
                             HStack {
                                 Text("Wochenplan")
-                                    .font(.custom("Lato-Bold", size: 16))
+                                    .font(CanovRTheme.lato(16, weight: .bold))
                                     .foregroundStyle(CanovRTheme.textPrimary)
                                 Spacer()
-                                Text(String(format: "%.0f km", week.totalKm))
+                                Text("\(week.totalKm, specifier: "%.0f") km")
                                     .font(CanovRTheme.captionFont)
                                     .foregroundStyle(CanovRTheme.textSecondary)
                             }
@@ -91,23 +89,23 @@ struct DashboardView: View {
                             } label: {
                                 Text("Wochenplan anzeigen")
                                     .font(CanovRTheme.captionFont)
-                                    .foregroundStyle(CanovRTheme.azure)
+                                    .foregroundStyle(CanovRTheme.primary)
                             }
                         }
                         .cardStyle()
 
                         // Recommendations
                         if !week.recommendations.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: CanovRTheme.spacingSM) {
                                 Text("Hinweise")
-                                    .font(.custom("Lato-Bold", size: 14))
+                                    .font(CanovRTheme.lato(14, weight: .bold))
                                     .foregroundStyle(CanovRTheme.textPrimary)
 
                                 ForEach(week.recommendations, id: \.self) { rec in
-                                    HStack(alignment: .top, spacing: 8) {
+                                    HStack(alignment: .top, spacing: CanovRTheme.spacingSM) {
                                         Image(systemName: "lightbulb.fill")
                                             .font(.system(size: 12))
-                                            .foregroundStyle(CanovRTheme.azure)
+                                            .foregroundStyle(CanovRTheme.warning)
                                             .padding(.top, 2)
                                         Text(rec)
                                             .font(CanovRTheme.captionFont)
@@ -124,16 +122,20 @@ struct DashboardView: View {
                         showLogRace = true
                     } label: {
                         Label("Rennen eintragen", systemImage: "trophy.fill")
-                            .font(.custom("Lato-Bold", size: 14))
-                            .foregroundStyle(CanovRTheme.longRun)
+                            .font(CanovRTheme.lato(14, weight: .bold))
+                            .foregroundStyle(CanovRTheme.primary)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(CanovRTheme.longRun.opacity(0.15))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.vertical, CanovRTheme.spacingMD)
+                            .background(CanovRTheme.primary.opacity(0.08))
+                            .clipShape(RoundedRectangle(cornerRadius: CanovRTheme.radiusMD))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: CanovRTheme.radiusMD)
+                                    .stroke(CanovRTheme.primary.opacity(0.2), lineWidth: 1)
+                            )
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
                 }
-                .padding(.vertical, 16)
+                .padding(.vertical, CanovRTheme.spacingLG)
             }
             .background(CanovRTheme.background)
             .task {
