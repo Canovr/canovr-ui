@@ -97,6 +97,18 @@ struct ProfileView: View {
                     }
                     .cardStyle()
 
+                    // Legal Links
+                    HStack(spacing: CanovRTheme.spacingLG) {
+                        if let privacyURL = URL(string: appState.api.baseURL + "/privacy") {
+                            Link("Datenschutz", destination: privacyURL)
+                        }
+                        if let impressumURL = URL(string: appState.api.baseURL + "/impressum") {
+                            Link("Impressum", destination: impressumURL)
+                        }
+                    }
+                    .font(CanovRTheme.lato(12))
+                    .foregroundStyle(CanovRTheme.textTertiary)
+
                     // Logout & Account-Löschung
                     VStack(spacing: CanovRTheme.spacingSM) {
                         Button(role: .destructive) {
