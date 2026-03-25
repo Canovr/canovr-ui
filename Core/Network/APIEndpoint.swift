@@ -2,6 +2,7 @@ import Foundation
 
 enum APIEndpoint {
     // Auth
+    case createStravaState
     case stravaAuth(StravaAuthRequest)
     case emailLogin(EmailLoginRequest)
     case emailRegister(EmailRegisterRequest)
@@ -24,7 +25,7 @@ enum APIEndpoint {
 
     var method: String {
         switch self {
-        case .getAthlete, .getHistory, .getMe:
+        case .createStravaState, .getAthlete, .getHistory, .getMe:
             return "GET"
         case .deleteAccount:
             return "DELETE"
@@ -38,6 +39,8 @@ enum APIEndpoint {
     var path: String {
         switch self {
         // Auth
+        case .createStravaState:
+            return "/api/auth/strava/state"
         case .stravaAuth:
             return "/api/auth/strava"
         case .emailLogin:
@@ -89,7 +92,7 @@ enum APIEndpoint {
     /// Auth-Endpoints brauchen keinen Bearer Token
     var requiresAuth: Bool {
         switch self {
-        case .stravaAuth, .emailLogin, .emailRegister, .refreshToken:
+        case .createStravaState, .stravaAuth, .emailLogin, .emailRegister, .refreshToken:
             return false
         default:
             return true

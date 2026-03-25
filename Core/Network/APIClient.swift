@@ -11,7 +11,7 @@ final class APIClient {
 
     init(authState: AuthState? = nil) {
         self.baseURL = UserDefaults.standard.string(forKey: "serverURL")
-            ?? "https://canovr-354203175068.europe-west3.run.app"
+            ?? AppConfig.apiBaseURL
         self.authState = authState
     }
 
@@ -50,27 +50,21 @@ final class APIClient {
             request.setValue(value, forHTTPHeaderField: field)
         }
 
-        print(">>> [\(endpoint.method)] \(baseURL + endpoint.path)")
-        if let body = request.httpBody, let json = String(data: body, encoding: .utf8) {
-            print(">>> BODY: \(json.prefix(500))")
-        }
+        logDebug("[\(endpoint.method)] \(endpoint.path)")
 
         let (data, response): (Data, URLResponse)
         do {
             (data, response) = try await URLSession.shared.data(for: request)
         } catch let error as URLError where error.code == .timedOut {
-            print(">>> CLIENT TIMEOUT: \(error)")
+            logDebug("Client Timeout: \(endpoint.path)")
             throw APIError.clientTimeout
         } catch {
-            print(">>> NETWORK ERROR: \(error)")
+            logDebug("Netzwerkfehler: \(endpoint.path)")
             throw APIError.networkError(error)
         }
 
         if let httpResponse = response as? HTTPURLResponse {
-            print(">>> RESPONSE: \(httpResponse.statusCode)")
-            if let body = String(data: data, encoding: .utf8)?.prefix(500) {
-                print(">>> DATA: \(body)")
-            }
+            logDebug("Antwortstatus: \(httpResponse.statusCode) (\(endpoint.path))")
         }
 
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -138,8 +132,12 @@ final class APIClient {
 
     // MARK: - Auth
 
-    func stravaAuth(code: String) async throws -> AuthResponse {
-        try await request(.stravaAuth(StravaAuthRequest(code: code)))
+    func createStravaState() async throws -> StravaStateResponse {
+        try await request(.createStravaState)
+    }
+
+    func stravaAuth(code: String, state: String) async throws -> AuthResponse {
+        try await request(.stravaAuth(StravaAuthRequest(code: code, state: state)))
     }
 
     func emailLogin(email: String, password: String) async throws -> AuthResponse {
@@ -203,6 +201,12 @@ final class APIClient {
     func getHistory(_ athleteId: Int) async throws -> HistoryResponse {
         try await request(.getHistory(athleteId))
     }
+}
+
+private func logDebug(_ message: @autoclosure () -> String) {
+    #if DEBUG
+    print(message())
+    #endif
 }
 
 // MARK: - Type-Erased Encodable Wrapper

@@ -65,13 +65,11 @@ struct CanovRApp: App {
         do {
             let userInfo = try await appState.api.getMe()
             await MainActor.run {
-                if userInfo.hasAthlete {
-                    // User hat Athlete → ID ist noch nicht bekannt, lade über /me
-                    // Wir brauchen die athlete_id. Setze needsOnboarding auf false
-                    // und lade den Athlete. Da wir die ID nicht direkt haben,
-                    // speichern wir sie aus dem früheren Flow.
+                if let athleteId = userInfo.athleteId, userInfo.hasAthlete {
+                    appState.athleteId = athleteId
                     authState.needsOnboarding = false
                 } else {
+                    appState.reset()
                     authState.needsOnboarding = true
                 }
             }

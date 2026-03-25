@@ -5,6 +5,7 @@ import Foundation
 final class StravaAuthManager: NSObject {
     private let clientId: String
     private let callbackDomain: String
+    private var activeSession: ASWebAuthenticationSession?
 
     var isAuthenticating = false
 
@@ -15,9 +16,14 @@ final class StravaAuthManager: NSObject {
         self.callbackDomain = callbackDomain
     }
 
-    /// Startet den Strava OAuth Flow und gibt den Authorization Code zurück
+    struct AuthorizationResult {
+        let code: String
+        let state: String
+    }
+
+    /// Startet den Strava OAuth Flow und gibt Code + validierten State zurück
     @MainActor
-    func authenticate() async throws -> String {
+    func authenticate(expectedState: String) async throws -> AuthorizationResult {
         let redirectURI = "https://\(callbackDomain)/auth/strava/callback"
         guard let callbackScheme = URL(string: redirectURI)?.scheme else {
             throw AuthError.invalidURL
@@ -33,6 +39,7 @@ final class StravaAuthManager: NSObject {
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: scope),
             URLQueryItem(name: "approval_prompt", value: "auto"),
+            URLQueryItem(name: "state", value: expectedState),
         ]
 
         guard let authURL = components.url else {
@@ -47,6 +54,7 @@ final class StravaAuthManager: NSObject {
                 url: authURL,
                 callbackURLScheme: callbackScheme
             ) { callbackURL, error in
+                self.activeSession = nil
                 if let error {
                     if (error as NSError).code == ASWebAuthenticationSessionError.canceledLogin.rawValue {
                         continuation.resume(throwing: AuthError.cancelled)
@@ -60,16 +68,28 @@ final class StravaAuthManager: NSObject {
                       callbackURL.host == self.callbackDomain,
                       callbackURL.path == "/auth/strava/callback",
                       let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false),
-                      let code = components.queryItems?.first(where: { $0.name == "code" })?.value else {
+                      let code = components.queryItems?.first(where: { $0.name == "code" })?.value,
+                      let returnedState = components.queryItems?.first(where: { $0.name == "state" })?.value else {
                     continuation.resume(throwing: AuthError.noCode)
                     return
                 }
 
-                continuation.resume(returning: code)
+                guard returnedState == expectedState else {
+                    continuation.resume(throwing: AuthError.invalidState)
+                    return
+                }
+
+                continuation.resume(
+                    returning: AuthorizationResult(
+                        code: code,
+                        state: returnedState,
+                    )
+                )
             }
 
             session.presentationContextProvider = self
             session.prefersEphemeralWebBrowserSession = false
+            self.activeSession = session
             session.start()
         }
     }
@@ -79,6 +99,7 @@ final class StravaAuthManager: NSObject {
         case cancelled
         case sessionFailed(Error)
         case noCode
+        case invalidState
 
         var errorDescription: String? {
             switch self {
@@ -86,6 +107,7 @@ final class StravaAuthManager: NSObject {
             case .cancelled: return "Anmeldung abgebrochen"
             case .sessionFailed(let e): return "Strava-Fehler: \(e.localizedDescription)"
             case .noCode: return "Kein Authorization Code von Strava erhalten"
+            case .invalidState: return "Ungültiger OAuth-State"
             }
         }
     }

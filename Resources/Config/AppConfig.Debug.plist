@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>api_base_url</key>
+	<string>https://canovr-354203175068.europe-west3.run.app</string>
+	<key>strava_client_id</key>
+	<string>214640</string>
+	<key>strava_callback_domain</key>
+	<string>canovr-354203175068.europe-west3.run.app</string>
+</dict>
+</plist>

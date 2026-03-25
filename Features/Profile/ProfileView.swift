@@ -158,7 +158,9 @@ struct ProfileView: View {
                     do {
                         try await appState.api.deleteAccount()
                     } catch {
-                        print("Account-Löschung fehlgeschlagen: \(error)")
+                        #if DEBUG
+                        print("Account-Löschung fehlgeschlagen.")
+                        #endif
                     }
                     await MainActor.run {
                         appState.reset()

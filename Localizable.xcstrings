@@ -110,6 +110,9 @@
         }
       }
     },
+    "Datenschutz" : {
+
+    },
     "Datum" : {
       "localizations" : {
         "en" : {
@@ -416,6 +419,9 @@
           }
         }
       }
+    },
+    "Impressum" : {
+
     },
     "Intervalle" : {
       "localizations" : {

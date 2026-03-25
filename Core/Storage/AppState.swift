@@ -77,7 +77,9 @@ final class AppState {
                 break
             } catch let err as APIError {
                 if case .notFound = err {
-                    print("Athlet \(id) nicht auf Server gefunden — Reset")
+                    #if DEBUG
+                    print("Athletenprofil nicht auf Server gefunden — lokaler Reset.")
+                    #endif
                     reset()
                     return
                 }
@@ -175,10 +177,8 @@ final class AppState {
         let created: AthleteResponse
         do {
             created = try await api.createAthlete(data, idempotencyKey: idempotencyKey)
-            print("Athlet angelegt: id=\(created.id), name=\(created.name)")
         } catch {
             isLoading = false
-            print("Fehler beim Anlegen: \(error)")
             throw error
         }
 

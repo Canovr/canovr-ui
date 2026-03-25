@@ -11,8 +11,8 @@ struct LoginView: View {
     @State private var error: String?
 
     @State private var stravaManager = StravaAuthManager(
-        clientId: "214640",
-        callbackDomain: "canovr-354203175068.europe-west3.run.app"
+        clientId: AppConfig.stravaClientID,
+        callbackDomain: AppConfig.stravaCallbackDomain
     )
 
     var body: some View {
@@ -127,8 +127,12 @@ struct LoginView: View {
         error = nil
 
         do {
-            let code = try await stravaManager.authenticate()
-            let response = try await appState.api.stravaAuth(code: code)
+            let stateResponse = try await appState.api.createStravaState()
+            let authResult = try await stravaManager.authenticate(expectedState: stateResponse.state)
+            let response = try await appState.api.stravaAuth(
+                code: authResult.code,
+                state: authResult.state
+            )
             await MainActor.run {
                 authState.setTokens(access: response.accessToken, refresh: response.refreshToken)
                 authState.needsOnboarding = response.needsOnboarding

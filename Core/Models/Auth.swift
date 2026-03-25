@@ -4,6 +4,7 @@ import Foundation
 
 struct StravaAuthRequest: Codable {
     let code: String
+    let state: String
 }
 
 struct EmailRegisterRequest: Codable {
@@ -42,4 +43,10 @@ struct UserInfo: Codable {
     let lastName: String?
     let authProvider: String
     let hasAthlete: Bool
+    let athleteId: Int?
+}
+
+struct StravaStateResponse: Codable {
+    let state: String
+    let expiresAt: String
 }
