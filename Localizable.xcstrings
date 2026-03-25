@@ -54,6 +54,12 @@
         }
       }
     },
+    "Account löschen" : {
+
+    },
+    "Account löschen?" : {
+
+    },
     "Aerobe Basis" : {
       "localizations" : {
         "en" : {
@@ -124,6 +130,9 @@
         }
       }
     },
+    "Dein Account und alle Trainingsdaten werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden." : {
+
+    },
     "Dein intelligenter Trainingsplan" : {
       "localizations" : {
         "en" : {
@@ -185,6 +194,7 @@
       }
     },
     "Die App verbindet sich mit dem CanovR-Backend. Gib die Server-URL ein." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -406,9 +416,6 @@
           }
         }
       }
-    },
-    "https://..." : {
-
     },
     "Intervalle" : {
       "localizations" : {
@@ -779,6 +786,7 @@
 
     },
     "Server" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -789,6 +797,7 @@
       }
     },
     "Server-URL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -937,6 +946,9 @@
           }
         }
       }
+    },
+    "Unwiderruflich löschen" : {
+
     },
     "Verbesserung" : {
 

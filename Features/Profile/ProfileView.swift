@@ -4,25 +4,28 @@ struct ProfileView: View {
     @Environment(AppState.self) private var appState
     @Environment(AuthState.self) private var authState
     @State private var showEdit = false
-    @State private var showServerConfig = false
+    @State private var showDeleteConfirmation = false
+    @State private var isDeleting = false
 
-    private let zoneRoles: [Int: String] = [
-        80: "Basic Endurance",
-        85: "General Endurance",
-        90: "Supportive Endurance",
-        95: "Specific Endurance",
-        100: "Race Pace",
-        105: "Specific Speed",
-        110: "Supportive Speed",
-        115: "General Speed",
-    ]
+    private var zoneRoles: [Int: String] {
+        [
+            80: String(localized: "Basic Endurance"),
+            85: String(localized: "General Endurance"),
+            90: String(localized: "Supportive Endurance"),
+            95: String(localized: "Specific Endurance"),
+            100: String(localized: "Race Pace"),
+            105: String(localized: "Specific Speed"),
+            110: String(localized: "Supportive Speed"),
+            115: String(localized: "General Speed"),
+        ]
+    }
 
     var body: some View {
         ScrollView {
             if let athlete = appState.athlete {
-                VStack(spacing: 12) {
+                VStack(spacing: CanovRTheme.spacingMD) {
                     // Athlete Card
-                    VStack(spacing: 12) {
+                    VStack(spacing: CanovRTheme.spacingMD) {
                         HStack {
                             Text(athlete.name)
                                 .font(CanovRTheme.headlineFont)
@@ -35,11 +38,11 @@ struct ProfileView: View {
                             } label: {
                                 Image(systemName: "gearshape")
                                     .font(.system(size: 18, weight: .medium))
-                                    .foregroundStyle(CanovRTheme.textSecondary)
+                                    .foregroundStyle(CanovRTheme.textTertiary)
                             }
                         }
 
-                        HStack(spacing: 16) {
+                        HStack(spacing: CanovRTheme.spacingLG) {
                             ProfileStat(
                                 label: DistanceOption.all.first { $0.id == athlete.targetDistance }?.label ?? athlete.targetDistance,
                                 value: athlete.racePace
@@ -57,9 +60,9 @@ struct ProfileView: View {
                     .cardStyle()
 
                     // Pace Zones
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: CanovRTheme.spacingMD) {
                         Text("Pace-Zonen")
-                            .font(.custom("Lato-Bold", size: 18))
+                            .font(CanovRTheme.headlineFont)
                             .foregroundStyle(CanovRTheme.textPrimary)
 
                         let sortedZones = athlete.paceZones.sorted { a, b in
@@ -70,18 +73,18 @@ struct ProfileView: View {
 
                         ForEach(sortedZones, id: \.key) { zone, pace in
                             let pct = Int(zone.dropFirst()) ?? 100
-                            HStack(spacing: 12) {
-                                RoundedRectangle(cornerRadius: 4)
+                            HStack(spacing: CanovRTheme.spacingMD) {
+                                RoundedRectangle(cornerRadius: 3)
                                     .fill(CanovRTheme.zoneColor(percentage: pct))
-                                    .frame(width: 6, height: 36)
+                                    .frame(width: 4, height: 36)
 
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(zone)
-                                        .font(.custom("Lato-Bold", size: 15))
+                                        .font(CanovRTheme.lato(15, weight: .bold))
                                         .foregroundStyle(CanovRTheme.textPrimary)
                                     Text(zoneRoles[pct] ?? "")
-                                        .font(.custom("Lato-Regular", size: 11))
-                                        .foregroundStyle(CanovRTheme.textSecondary)
+                                        .font(CanovRTheme.lato(11))
+                                        .foregroundStyle(CanovRTheme.textTertiary)
                                 }
 
                                 Spacer()
@@ -94,35 +97,66 @@ struct ProfileView: View {
                     }
                     .cardStyle()
 
-                    // Logout
-                    Button(role: .destructive) {
-                        Task {
-                            await appState.api.logout()
-                            await MainActor.run {
-                                appState.reset()
-                                authState.clearTokens()
+                    // Logout & Account-Löschung
+                    VStack(spacing: CanovRTheme.spacingSM) {
+                        Button(role: .destructive) {
+                            Task {
+                                await appState.api.logout()
+                                await MainActor.run {
+                                    appState.reset()
+                                    authState.clearTokens()
+                                }
                             }
+                        } label: {
+                            Label("Abmelden", systemImage: "rectangle.portrait.and.arrow.right")
+                                .font(CanovRTheme.lato(14))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
                         }
-                    } label: {
-                        Label("Abmelden", systemImage: "rectangle.portrait.and.arrow.right")
-                            .font(.custom("Lato-Regular", size: 14))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
+                        .buttonStyle(.plain)
+                        .foregroundStyle(CanovRTheme.error.opacity(0.7))
+
+                        Button(role: .destructive) {
+                            showDeleteConfirmation = true
+                        } label: {
+                            Label("Account löschen", systemImage: "trash")
+                                .font(CanovRTheme.lato(12))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(CanovRTheme.textTertiary)
+                        .disabled(isDeleting)
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.red.opacity(0.7))
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
+                    .padding(.top, CanovRTheme.spacingSM)
                 }
-                .padding(.vertical, 16)
+                .padding(.vertical, CanovRTheme.spacingLG)
             }
         }
         .background(CanovRTheme.background)
         .sheet(isPresented: $showEdit) {
             EditProfileSheet()
         }
-        .sheet(isPresented: $showServerConfig) {
-            ServerConfigSheet()
+        .alert("Account löschen?", isPresented: $showDeleteConfirmation) {
+            Button("Abbrechen", role: .cancel) { }
+            Button("Unwiderruflich löschen", role: .destructive) {
+                Task {
+                    isDeleting = true
+                    do {
+                        try await appState.api.deleteAccount()
+                    } catch {
+                        print("Account-Löschung fehlgeschlagen: \(error)")
+                    }
+                    await MainActor.run {
+                        appState.reset()
+                        authState.clearTokens()
+                        isDeleting = false
+                    }
+                }
+            }
+        } message: {
+            Text("Dein Account und alle Trainingsdaten werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.")
         }
         .refreshable {
             await appState.loadAthlete()
@@ -137,13 +171,13 @@ private struct ProfileStat: View {
     let value: String
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: CanovRTheme.spacingXS) {
             Text(value)
-                .font(.custom("Lato-Bold", size: 16))
+                .font(CanovRTheme.lato(16, weight: .bold))
                 .foregroundStyle(CanovRTheme.textPrimary)
             Text(label)
-                .font(.custom("Lato-Regular", size: 11))
-                .foregroundStyle(CanovRTheme.textSecondary)
+                .font(CanovRTheme.lato(11))
+                .foregroundStyle(CanovRTheme.textTertiary)
         }
     }
 }

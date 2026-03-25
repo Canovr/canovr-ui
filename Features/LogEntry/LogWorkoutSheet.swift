@@ -11,7 +11,6 @@ struct LogWorkoutSheet: View {
     @State private var isSaving = false
     @State private var error: String?
 
-    /// Vorbefüllt aus dem heutigen Workout
     private var todayWorkout: DayPlan? { appState.todayWorkout }
 
     var body: some View {
@@ -21,17 +20,19 @@ struct LogWorkoutSheet: View {
                     if let workout = todayWorkout {
                         HStack {
                             Text(workout.workoutName ?? workout.workoutKey ?? "Training")
+                                .font(CanovRTheme.bodyFont)
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Spacer()
                             if let zone = workout.zone {
                                 Text(zone)
-                                    .font(.custom("Lato-Bold", size: 13))
-                                    .foregroundStyle(CanovRTheme.azure)
+                                    .font(CanovRTheme.lato(13, weight: .bold))
+                                    .foregroundStyle(CanovRTheme.primary)
                             }
                         }
                     }
 
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
+                        .tint(CanovRTheme.primary)
                 }
 
                 Section("Details (optional)") {
@@ -48,7 +49,7 @@ struct LogWorkoutSheet: View {
                 if let error {
                     Section {
                         Text(error)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(CanovRTheme.error)
                     }
                 }
             }
@@ -59,12 +60,14 @@ struct LogWorkoutSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Abbrechen") { dismiss() }
+                        .foregroundStyle(CanovRTheme.primary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
                         Task { await save() }
                     }
                     .disabled(isSaving || todayWorkout?.workoutKey == nil)
+                    .foregroundStyle(CanovRTheme.primary)
                 }
             }
         }

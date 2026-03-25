@@ -6,7 +6,7 @@ struct NameStepView: View {
     @FocusState private var focused: Bool
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: CanovRTheme.spacingXXL) {
             Spacer()
 
             Text("Wie heißt du?")
@@ -14,7 +14,7 @@ struct NameStepView: View {
                 .foregroundStyle(CanovRTheme.textPrimary)
 
             TextField("Vorname", text: $name)
-                .font(.custom("Lato-Regular", size: 28))
+                .font(CanovRTheme.lato(28))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(CanovRTheme.textPrimary)
                 .focused($focused)
@@ -26,21 +26,13 @@ struct NameStepView: View {
 
             Spacer()
 
+            let nameEmpty = name.trimmingCharacters(in: .whitespaces).isEmpty
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.custom("Lato-Bold", size: 18))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(
-                        name.trimmingCharacters(in: .whitespaces).isEmpty
-                            ? Color.gray.opacity(0.3)
-                            : CanovRTheme.azure
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .primaryButtonStyle(disabled: nameEmpty)
             }
-            .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-            .padding(.horizontal, 24)
+            .disabled(nameEmpty)
+            .padding(.horizontal, CanovRTheme.spacingXL)
             .padding(.bottom, 48)
         }
         .onAppear { focused = true }

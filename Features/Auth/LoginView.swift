@@ -16,114 +16,105 @@ struct LoginView: View {
     )
 
     var body: some View {
-        ZStack {
-            CanovRTheme.background.ignoresSafeArea()
+        ScrollView {
+            VStack(spacing: CanovRTheme.spacingXXL) {
+                Spacer().frame(height: 48)
 
-            ScrollView {
-                VStack(spacing: 32) {
-                    Spacer().frame(height: 40)
+                // Logo
+                VStack(spacing: CanovRTheme.spacingSM) {
+                    Text("CANOVR")
+                        .font(.custom("FugazOne-Regular", size: 44))
+                        .foregroundStyle(CanovRTheme.primary)
 
-                    // Logo
-                    VStack(spacing: 8) {
-                        Text("CANOVR")
-                            .font(.custom("FugazOne-Regular", size: 42))
-                            .foregroundStyle(CanovRTheme.primary)
+                    Text("Dein intelligenter Trainingsplan")
+                        .font(CanovRTheme.bodyFont)
+                        .foregroundStyle(CanovRTheme.textSecondary)
+                }
 
-                        Text("Dein intelligenter Trainingsplan")
-                            .font(CanovRTheme.bodyFont)
-                            .foregroundStyle(CanovRTheme.textSecondary)
-                    }
+                Spacer().frame(height: CanovRTheme.spacingSM)
 
-                    Spacer().frame(height: 16)
+                // Strava Button
+                Button {
+                    Task { await loginWithStrava() }
+                } label: {
+                    Text("Mit Strava anmelden")
+                        .font(CanovRTheme.lato(17, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 52)
+                    .background(CanovRTheme.strava)
+                    .clipShape(RoundedRectangle(cornerRadius: CanovRTheme.radiusMD))
+                }
+                .disabled(isLoading)
+                .padding(.horizontal, CanovRTheme.spacingXL)
 
-                    // Strava Button
-                    Button {
-                        Task { await loginWithStrava() }
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: "figure.run")
-                                .font(.system(size: 20, weight: .bold))
-                            Text("Mit Strava anmelden")
-                                .font(.custom("Lato-Bold", size: 17))
-                        }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .background(Color(red: 0.988, green: 0.325, blue: 0.063)) // Strava Orange #FC5200
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
-                    .disabled(isLoading)
-                    .padding(.horizontal, 24)
+                // Divider
+                HStack(spacing: CanovRTheme.spacingMD) {
+                    CanovRTheme.border.frame(height: 1)
+                    Text("oder")
+                        .font(CanovRTheme.lato(14))
+                        .foregroundStyle(CanovRTheme.textTertiary)
+                    CanovRTheme.border.frame(height: 1)
+                }
+                .padding(.horizontal, CanovRTheme.spacingXL)
 
-                    // Divider
-                    HStack {
-                        Rectangle()
-                            .fill(CanovRTheme.textSecondary.opacity(0.3))
-                            .frame(height: 1)
-                        Text("oder")
-                            .font(.custom("Lato-Regular", size: 14))
-                            .foregroundStyle(CanovRTheme.textSecondary)
-                        Rectangle()
-                            .fill(CanovRTheme.textSecondary.opacity(0.3))
-                            .frame(height: 1)
-                    }
-                    .padding(.horizontal, 24)
-
-                    // Email Login
-                    VStack(spacing: 16) {
-                        TextField("Email", text: $email)
-                            .textFieldStyle(.roundedBorder)
+                // Email Login
+                VStack(spacing: CanovRTheme.spacingLG) {
+                    VStack(spacing: CanovRTheme.spacingMD) {
+                        TextField("", text: $email, prompt: Text("Email").foregroundColor(CanovRTheme.placeholder))
+                            .inputStyle()
                             .textContentType(.emailAddress)
                             .autocapitalization(.none)
                             .keyboardType(.emailAddress)
 
-                        SecureField("Passwort", text: $password)
-                            .textFieldStyle(.roundedBorder)
+                        SecureField("", text: $password, prompt: Text("Passwort").foregroundColor(CanovRTheme.placeholder))
+                            .inputStyle()
                             .textContentType(.password)
-
-                        Button {
-                            Task { await loginWithEmail() }
-                        } label: {
-                            Text("Anmelden")
-                                .font(.custom("Lato-Bold", size: 17))
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 48)
-                                .background(CanovRTheme.primary)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .disabled(email.isEmpty || password.isEmpty || isLoading)
-                        .opacity(email.isEmpty || password.isEmpty ? 0.5 : 1)
-                    }
-                    .padding(.horizontal, 24)
-
-                    // Error
-                    if let error {
-                        Text(error)
-                            .font(.custom("Lato-Regular", size: 14))
-                            .foregroundStyle(.red)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 24)
                     }
 
-                    // Register Link
+                    let loginDisabled = email.isEmpty || password.isEmpty || isLoading
                     Button {
-                        showRegister = true
+                        Task { await loginWithEmail() }
                     } label: {
-                        Text("Noch kein Konto? **Registrieren**")
-                            .font(.custom("Lato-Regular", size: 15))
-                            .foregroundStyle(CanovRTheme.textSecondary)
+                        Text("Anmelden")
+                            .primaryButtonStyle(disabled: loginDisabled)
                     }
+                    .disabled(loginDisabled)
+                }
+                .padding(.horizontal, CanovRTheme.spacingXL)
 
-                    if isLoading {
-                        ProgressView()
-                            .tint(CanovRTheme.primary)
-                    }
+                // Error
+                if let error {
+                    Text(error)
+                        .font(CanovRTheme.lato(14))
+                        .foregroundStyle(CanovRTheme.error)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, CanovRTheme.spacingXL)
+                }
 
-                    Spacer()
+                // Register Link
+                HStack(spacing: 4) {
+                    Text("Noch kein Konto?")
+                        .font(CanovRTheme.lato(15))
+                        .foregroundStyle(CanovRTheme.textPrimary)
+                    Text("Registrieren")
+                        .font(CanovRTheme.lato(15, weight: .bold))
+                        .foregroundStyle(CanovRTheme.primary)
+                }
+                .padding(.vertical, CanovRTheme.spacingMD)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    showRegister = true
+                }
+
+                if isLoading {
+                    ProgressView()
+                        .tint(CanovRTheme.primary)
                 }
             }
+            .padding(.bottom, 48)
         }
+        .background(CanovRTheme.background)
         .sheet(isPresented: $showRegister) {
             RegisterView()
         }
@@ -144,7 +135,7 @@ struct LoginView: View {
                 authState.stravaProfile = response.stravaProfile
             }
         } catch StravaAuthManager.AuthError.cancelled {
-            // User hat abgebrochen — nichts tun
+            // User cancelled — do nothing
         } catch {
             self.error = error.localizedDescription
         }

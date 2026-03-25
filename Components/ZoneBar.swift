@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Horizontaler Balken mit allen 8 Pace-Zonen. Optional eine Zone hervorgehoben.
+/// Horizontal bar showing all 8 pace zones. Optionally highlights one zone.
 struct ZoneBar: View {
     var highlightedZone: String? = nil
-    let zones: [String: String]   // z.B. ["z80": "5:37/km", ...]
+    let zones: [String: String]
 
     private let zoneOrder = [80, 85, 90, 95, 100, 105, 110, 115]
 
@@ -13,17 +13,18 @@ struct ZoneBar: View {
                 let label = "z\(pct)"
                 let isHighlighted = highlightedZone == label
 
-                RoundedRectangle(cornerRadius: 3)
+                RoundedRectangle(cornerRadius: 4)
                     .fill(CanovRTheme.zoneColor(percentage: pct))
-                    .opacity(highlightedZone == nil || isHighlighted ? 1.0 : 0.4)
-                    .frame(height: isHighlighted ? 28 : 20)
+                    .opacity(highlightedZone == nil || isHighlighted ? 1.0 : 0.3)
+                    .frame(height: isHighlighted ? 28 : 18)
                     .overlay {
                         if isHighlighted {
                             Text(label)
-                                .font(.custom("Lato-Bold", size: 9))
-                                .foregroundStyle(CanovRTheme.textPrimary)
+                                .font(CanovRTheme.lato(9, weight: .bold))
+                                .foregroundStyle(.white)
                         }
                     }
+                    .animation(.easeInOut(duration: 0.2), value: isHighlighted)
             }
         }
     }

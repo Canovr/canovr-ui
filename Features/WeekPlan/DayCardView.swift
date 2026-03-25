@@ -4,11 +4,11 @@ struct DayCardView: View {
     let day: DayPlan
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Header: Tag + Session-Typ
+        VStack(alignment: .leading, spacing: CanovRTheme.spacingSM) {
+            // Header: Day + Session type
             HStack {
                 Text(day.dayName)
-                    .font(.custom("Lato-Bold", size: 16))
+                    .font(CanovRTheme.lato(16, weight: .bold))
                     .foregroundStyle(CanovRTheme.textPrimary)
                 Spacer()
                 SessionTypeBadge(type: day.sessionType)
@@ -17,21 +17,21 @@ struct DayCardView: View {
             if day.sessionType == "rest" {
                 Text("Ruhetag")
                     .font(CanovRTheme.bodyFont)
-                    .foregroundStyle(CanovRTheme.textSecondary)
+                    .foregroundStyle(CanovRTheme.textTertiary)
             } else {
                 // Workout Name
                 if let name = day.workoutName {
                     Text(name)
-                        .font(.custom("Lato-Regular", size: 15))
+                        .font(CanovRTheme.lato(15))
                         .foregroundStyle(CanovRTheme.textPrimary)
                 }
 
                 // Zone + Pace + Volume
-                HStack(spacing: 12) {
+                HStack(spacing: CanovRTheme.spacingMD) {
                     if let zone = day.zone, let pace = day.pace {
-                        HStack(spacing: 4) {
+                        HStack(spacing: CanovRTheme.spacingXS) {
                             Text(zone)
-                                .font(.custom("Lato-Bold", size: 13))
+                                .font(CanovRTheme.lato(13, weight: .bold))
                                 .foregroundStyle(
                                     CanovRTheme.zoneColor(percentage: day.percentage ?? 100)
                                 )
@@ -43,15 +43,15 @@ struct DayCardView: View {
 
                     if let volume = day.volume {
                         Text(volume)
-                            .font(.custom("Lato-Regular", size: 13))
+                            .font(CanovRTheme.lato(13))
                             .foregroundStyle(CanovRTheme.textSecondary)
                     }
 
                     Spacer()
 
                     if day.estimatedKm > 0 {
-                        Text(String(format: "%.0f km", day.estimatedKm))
-                            .font(.custom("Lato-Bold", size: 13))
+                        Text("\(day.estimatedKm, specifier: "%.0f") km")
+                            .font(CanovRTheme.lato(13, weight: .bold))
                             .foregroundStyle(CanovRTheme.textSecondary)
                     }
                 }

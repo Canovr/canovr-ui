@@ -10,22 +10,24 @@ struct TodayCardView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: CanovRTheme.spacingMD) {
             // Header
             HStack {
                 Text("Heute")
-                    .font(.custom("Lato-Bold", size: 14))
-                    .foregroundStyle(CanovRTheme.textSecondary)
+                    .font(CanovRTheme.lato(13, weight: .bold))
+                    .foregroundStyle(CanovRTheme.textTertiary)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
                 Spacer()
                 SessionTypeBadge(type: day.sessionType)
             }
 
             if day.sessionType == "rest" {
-                // Ruhetag
-                VStack(spacing: 8) {
+                // Rest day
+                VStack(spacing: CanovRTheme.spacingSM) {
                     Image(systemName: "bed.double.fill")
                         .font(.system(size: 32))
-                        .foregroundStyle(CanovRTheme.textSecondary)
+                        .foregroundStyle(CanovRTheme.textTertiary)
                     Text("Ruhetag")
                         .font(CanovRTheme.headlineFont)
                         .foregroundStyle(CanovRTheme.textPrimary)
@@ -34,7 +36,7 @@ struct TodayCardView: View {
                         .foregroundStyle(CanovRTheme.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+                .padding(.vertical, CanovRTheme.spacingMD)
             } else {
                 // Workout
                 Text(day.workoutName ?? "Training")
@@ -47,11 +49,11 @@ struct TodayCardView: View {
                         .foregroundStyle(CanovRTheme.textSecondary)
                 }
 
-                HStack(spacing: 16) {
+                HStack(spacing: CanovRTheme.spacingLG) {
                     if let zone = day.zone, let pace = day.pace {
-                        HStack(spacing: 4) {
+                        HStack(spacing: CanovRTheme.spacingXS) {
                             Text(zone)
-                                .font(.custom("Lato-Bold", size: 14))
+                                .font(CanovRTheme.lato(14, weight: .bold))
                                 .foregroundStyle(
                                     CanovRTheme.zoneColor(percentage: day.percentage ?? 100)
                                 )
@@ -66,7 +68,7 @@ struct TodayCardView: View {
                     }
 
                     if day.estimatedKm > 0 {
-                        Text(String(format: "%.0f km", day.estimatedKm))
+                        Text("\(day.estimatedKm, specifier: "%.0f") km")
                             .font(CanovRTheme.captionFont)
                             .foregroundStyle(CanovRTheme.textSecondary)
                     }
@@ -81,38 +83,34 @@ struct TodayCardView: View {
                 }
 
                 if isCompleted {
-                    // Completed feedback
-                    HStack(spacing: 8) {
+                    HStack(spacing: CanovRTheme.spacingSM) {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.system(size: 18))
-                            .foregroundStyle(CanovRTheme.longRun)
+                            .foregroundStyle(CanovRTheme.primary)
                         Text("Erledigt")
-                            .font(.custom("Lato-Bold", size: 16))
-                            .foregroundStyle(CanovRTheme.longRun)
+                            .font(CanovRTheme.lato(16, weight: .bold))
+                            .foregroundStyle(CanovRTheme.primary)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, CanovRTheme.spacingMD)
                 } else {
                     Button(action: onComplete) {
                         Text("Erledigt")
-                            .font(.custom("Lato-Bold", size: 16))
-                            .foregroundStyle(CanovRTheme.primaryBtnText)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(CanovRTheme.azure.opacity(1))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .primaryButtonStyle()
                     }
-                    .padding(.top, 4)
+                    .padding(.top, CanovRTheme.spacingXS)
                 }
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.horizontal, CanovRTheme.spacingXL)
+        .padding(.vertical, CanovRTheme.spacingLG)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            isHard
-                ? AnyShapeStyle(CanovRTheme.azureGradient.opacity(0.15))
-                : AnyShapeStyle(CanovRTheme.surface)
+        .background(CanovRTheme.surface)
+        .clipShape(RoundedRectangle(cornerRadius: CanovRTheme.radiusLG))
+        .overlay(
+            RoundedRectangle(cornerRadius: CanovRTheme.radiusLG)
+                .stroke(CanovRTheme.border.opacity(0.5), lineWidth: 1)
         )
+        .padding(.horizontal, CanovRTheme.spacingXL)
     }
 }

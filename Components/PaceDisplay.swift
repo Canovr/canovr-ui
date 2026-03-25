@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Zeigt eine Pace im Format "M:SS/km" an.
+/// Displays a pace in "M:SS/km" format.
 struct PaceDisplay: View {
     let pace: String
     var size: Font = CanovRTheme.paceFont
@@ -12,7 +12,7 @@ struct PaceDisplay: View {
                 .foregroundStyle(CanovRTheme.textPrimary)
             Text("/km")
                 .font(CanovRTheme.captionFont)
-                .foregroundStyle(CanovRTheme.textSecondary)
+                .foregroundStyle(CanovRTheme.textTertiary)
         }
     }
 }

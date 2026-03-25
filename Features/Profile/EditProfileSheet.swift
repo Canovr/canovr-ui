@@ -26,6 +26,7 @@ struct EditProfileSheet: View {
                             Text(label).tag(id)
                         }
                     }
+                    .tint(CanovRTheme.primary)
 
                     Stepper("Woche \(weekInPhase) von \(phaseWeeksTotal)", value: $weekInPhase, in: 1...phaseWeeksTotal)
                     Stepper("Phasendauer: \(phaseWeeksTotal) Wochen", value: $phaseWeeksTotal, in: 1...24)
@@ -34,22 +35,25 @@ struct EditProfileSheet: View {
                 Section("Volumen") {
                     VStack(alignment: .leading) {
                         Text("\(Int(weeklyKm)) km/Woche")
+                            .font(CanovRTheme.bodyFont)
                         Slider(value: $weeklyKm, in: 10...150, step: 5)
-                            .tint(CanovRTheme.azure)
+                            .tint(CanovRTheme.primary)
                     }
                 }
 
                 Section("Tage") {
                     Picker("Ruhetag", selection: $restDay) {
                         ForEach(0..<7) { i in
-                            Text(["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][i]).tag(i)
+                            Text(Calendar.current.shortWeekdaySymbols[i]).tag(i)
                         }
                     }
+                    .tint(CanovRTheme.primary)
                     Picker("Langer Lauf", selection: $longRunDay) {
                         ForEach(0..<7) { i in
-                            Text(["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][i]).tag(i)
+                            Text(Calendar.current.shortWeekdaySymbols[i]).tag(i)
                         }
                     }
+                    .tint(CanovRTheme.primary)
                 }
 
                 Section("Wettkampf") {
@@ -59,7 +63,7 @@ struct EditProfileSheet: View {
 
                 if let error {
                     Section {
-                        Text(error).foregroundStyle(.red)
+                        Text(error).foregroundStyle(CanovRTheme.error)
                     }
                 }
             }
@@ -70,12 +74,14 @@ struct EditProfileSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Abbrechen") { dismiss() }
+                        .foregroundStyle(CanovRTheme.primary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
                         Task { await save() }
                     }
                     .disabled(isSaving)
+                    .foregroundStyle(CanovRTheme.primary)
                 }
             }
             .onAppear { loadCurrent() }

@@ -18,80 +18,76 @@ struct RegisterView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                CanovRTheme.background.ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: CanovRTheme.spacingXL) {
+                    // Logo
+                    Text("CANOVR")
+                        .font(.custom("FugazOne-Regular", size: 32))
+                        .foregroundStyle(CanovRTheme.primary)
+                        .padding(.top, CanovRTheme.spacingXXL)
 
-                ScrollView {
-                    VStack(spacing: 20) {
-                        Spacer().frame(height: 20)
+                    Text("Konto erstellen")
+                        .font(CanovRTheme.headlineFont)
+                        .foregroundStyle(CanovRTheme.textPrimary)
 
-                        Text("Konto erstellen")
-                            .font(CanovRTheme.headlineFont)
-                            .foregroundStyle(CanovRTheme.textPrimary)
+                    VStack(spacing: CanovRTheme.spacingMD) {
+                        TextField("", text: $name, prompt: Text("Name").foregroundColor(CanovRTheme.placeholder))
+                            .inputStyle()
+                            .textContentType(.name)
 
-                        VStack(spacing: 16) {
-                            TextField("Name", text: $name)
-                                .textFieldStyle(.roundedBorder)
-                                .textContentType(.name)
+                        TextField("", text: $email, prompt: Text("Email").foregroundColor(CanovRTheme.placeholder))
+                            .inputStyle()
+                            .textContentType(.emailAddress)
+                            .autocapitalization(.none)
+                            .keyboardType(.emailAddress)
 
-                            TextField("Email", text: $email)
-                                .textFieldStyle(.roundedBorder)
-                                .textContentType(.emailAddress)
-                                .autocapitalization(.none)
-                                .keyboardType(.emailAddress)
+                        SecureField("", text: $password, prompt: Text("Passwort (min. 8 Zeichen)").foregroundColor(CanovRTheme.placeholder))
+                            .inputStyle()
+                            .textContentType(.newPassword)
 
-                            SecureField("Passwort (min. 8 Zeichen)", text: $password)
-                                .textFieldStyle(.roundedBorder)
-                                .textContentType(.newPassword)
+                        SecureField("", text: $confirmPassword, prompt: Text("Passwort bestätigen").foregroundColor(CanovRTheme.placeholder))
+                            .inputStyle()
+                            .textContentType(.newPassword)
 
-                            SecureField("Passwort bestätigen", text: $confirmPassword)
-                                .textFieldStyle(.roundedBorder)
-                                .textContentType(.newPassword)
-
-                            if !password.isEmpty && !confirmPassword.isEmpty && password != confirmPassword {
-                                Text("Passwörter stimmen nicht überein")
-                                    .font(.custom("Lato-Regular", size: 13))
-                                    .foregroundStyle(.red)
-                            }
+                        if !password.isEmpty && !confirmPassword.isEmpty && password != confirmPassword {
+                            Text("Passwörter stimmen nicht überein")
+                                .font(CanovRTheme.captionFont)
+                                .foregroundStyle(CanovRTheme.error)
                         }
-                        .padding(.horizontal, 24)
-
-                        // Error
-                        if let error {
-                            Text(error)
-                                .font(.custom("Lato-Regular", size: 14))
-                                .foregroundStyle(.red)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 24)
-                        }
-
-                        Button {
-                            Task { await register() }
-                        } label: {
-                            Text("Registrieren")
-                                .font(.custom("Lato-Bold", size: 17))
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 48)
-                                .background(isValid ? CanovRTheme.primary : CanovRTheme.primary.opacity(0.5))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .disabled(!isValid || isLoading)
-                        .padding(.horizontal, 24)
-
-                        if isLoading {
-                            ProgressView()
-                                .tint(CanovRTheme.primary)
-                        }
-
-                        Spacer()
                     }
+                    .padding(.horizontal, CanovRTheme.spacingXL)
+
+                    if let error {
+                        Text(error)
+                            .font(CanovRTheme.lato(14))
+                            .foregroundStyle(CanovRTheme.error)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, CanovRTheme.spacingXL)
+                    }
+
+                    Button {
+                        Task { await register() }
+                    } label: {
+                        Text("Registrieren")
+                            .primaryButtonStyle(disabled: !isValid || isLoading)
+                    }
+                    .disabled(!isValid || isLoading)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
+
+                    if isLoading {
+                        ProgressView()
+                            .tint(CanovRTheme.primary)
+                    }
+
+                    Spacer()
                 }
             }
+            .background(CanovRTheme.background)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Abbrechen") { dismiss() }
+                        .foregroundStyle(CanovRTheme.primary)
                 }
             }
         }
@@ -109,6 +105,7 @@ struct RegisterView: View {
             )
             await MainActor.run {
                 authState.setTokens(access: response.accessToken, refresh: response.refreshToken)
+                authState.registeredName = name
                 authState.needsOnboarding = true
                 dismiss()
             }

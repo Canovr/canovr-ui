@@ -4,42 +4,43 @@ struct WeekOverviewBar: View {
     let days: [DayPlan]
     let todayIndex: Int
 
-    private let dayLabels = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+    private var dayLabels: [String] {
+        Calendar.current.shortWeekdaySymbols.map { $0.replacingOccurrences(of: ".", with: "") }
+    }
 
     var body: some View {
         HStack(spacing: 0) {
             ForEach(days) { day in
                 VStack(spacing: 6) {
-                    // Punkt
                     Circle()
-                        .fill(Color(hex: "DBEAFE"))
+                        .fill(day.dayIndex == todayIndex ? CanovRTheme.primary : CanovRTheme.primaryLight)
                         .frame(width: 32, height: 32)
                         .overlay {
                             if day.sessionType == "rest" {
                                 Image(systemName: "minus")
                                     .font(.system(size: 12, weight: .bold))
-                                    .foregroundStyle(CanovRTheme.textSecondary)
+                                    .foregroundStyle(
+                                        day.dayIndex == todayIndex
+                                            ? CanovRTheme.primaryBtnText
+                                            : CanovRTheme.textTertiary
+                                    )
                             } else if let zone = day.zone {
                                 Text(zone.replacingOccurrences(of: "z", with: ""))
-                                    .font(.custom("Lato-Bold", size: 10))
-                                    .foregroundStyle(CanovRTheme.textPrimary)
-                            }
-                        }
-                        .overlay {
-                            if day.dayIndex == todayIndex {
-                                Circle()
-                                    .stroke(Color(hex: "3B82F6"), lineWidth: 2)
-                                    .frame(width: 38, height: 38)
+                                    .font(CanovRTheme.lato(10, weight: .bold))
+                                    .foregroundStyle(
+                                        day.dayIndex == todayIndex
+                                            ? CanovRTheme.primaryBtnText
+                                            : CanovRTheme.textPrimary
+                                    )
                             }
                         }
 
-                    // Tag-Label
                     Text(dayLabels[day.dayIndex])
-                        .font(.custom(day.dayIndex == todayIndex ? "Lato-Bold" : "Lato-Regular", size: 11))
+                        .font(CanovRTheme.lato(11, weight: day.dayIndex == todayIndex ? .bold : .regular))
                         .foregroundStyle(
                             day.dayIndex == todayIndex
-                                ? Color(hex: "3B82F6")
-                                : CanovRTheme.textSecondary
+                                ? CanovRTheme.primary
+                                : CanovRTheme.textTertiary
                         )
                 }
                 .frame(maxWidth: .infinity)

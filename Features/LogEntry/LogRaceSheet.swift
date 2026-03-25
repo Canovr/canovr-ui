@@ -17,12 +17,14 @@ struct LogRaceSheet: View {
             Form {
                 Section("Rennen") {
                     DatePicker("Datum", selection: $date, displayedComponents: .date)
+                        .tint(CanovRTheme.primary)
 
                     Picker("Distanz", selection: $distance) {
                         ForEach(DistanceOption.all) { option in
                             Text(option.label).tag(option.id)
                         }
                     }
+                    .tint(CanovRTheme.primary)
                 }
 
                 Section("Zeit") {
@@ -36,7 +38,7 @@ struct LogRaceSheet: View {
                         .frame(width: 120, height: 120)
 
                         Text(":")
-                            .font(.custom("Lato-Bold", size: 20))
+                            .font(CanovRTheme.lato(20, weight: .bold))
 
                         Picker("Sek", selection: $seconds) {
                             ForEach(0..<60) { s in
@@ -56,7 +58,7 @@ struct LogRaceSheet: View {
                 if let error {
                     Section {
                         Text(error)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(CanovRTheme.error)
                     }
                 }
             }
@@ -67,12 +69,14 @@ struct LogRaceSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Abbrechen") { dismiss() }
+                        .foregroundStyle(CanovRTheme.primary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
                         Task { await save() }
                     }
                     .disabled(isSaving)
+                    .foregroundStyle(CanovRTheme.primary)
                 }
             }
         }
@@ -97,7 +101,7 @@ struct LogRaceSheet: View {
 
         do {
             _ = try await appState.api.addRace(athleteId, data)
-            await appState.loadAthlete()  // Pace könnte sich geändert haben
+            await appState.loadAthlete()
             dismiss()
         } catch {
             self.error = error.localizedDescription

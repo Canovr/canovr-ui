@@ -4,15 +4,14 @@ struct WelcomeView: View {
     let onNext: () -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: CanovRTheme.spacingXXL) {
             Spacer()
 
-            // Logo
             Image(systemName: "figure.run")
                 .font(.system(size: 72))
-                .foregroundStyle(CanovRTheme.azureGradient)
+                .foregroundStyle(CanovRTheme.primary)
 
-            VStack(spacing: 12) {
+            VStack(spacing: CanovRTheme.spacingMD) {
                 Text("CANOVR")
                     .font(.custom("FugazOne-Regular", size: 42))
                     .foregroundStyle(CanovRTheme.primary)
@@ -23,21 +22,16 @@ struct WelcomeView: View {
 
                 Text("Full-Spectrum Percentage-Based Training")
                     .font(CanovRTheme.captionFont)
-                    .foregroundStyle(CanovRTheme.textSecondary)
+                    .foregroundStyle(CanovRTheme.textTertiary)
             }
 
             Spacer()
 
             Button(action: onNext) {
                 Text("Los geht's")
-                    .font(.custom("Lato-Bold", size: 18))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(CanovRTheme.azureGradient)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .primaryButtonStyle()
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, CanovRTheme.spacingXL)
             .padding(.bottom, 48)
         }
     }

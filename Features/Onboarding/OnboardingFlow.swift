@@ -6,7 +6,7 @@ struct OnboardingFlow: View {
     @State private var onboarding = OnboardingData()
     @State private var step = 0
 
-    /// Schritte: 0=Distanz, 1=Zeit, 2=Volumen, 3=Präferenzen, 4=Zusammenfassung
+    /// Steps: 0=Distance, 1=Time, 2=Volume, 3=Preferences, 4=Summary
     private let totalSteps = 4
 
     var body: some View {
@@ -15,10 +15,20 @@ struct OnboardingFlow: View {
 
             VStack(spacing: 0) {
                 // Progress Bar
-                ProgressView(value: Double(step), total: Double(totalSteps))
-                    .tint(CanovRTheme.azure)
-                    .padding(.horizontal, 24)
-                    .padding(.top, 8)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(CanovRTheme.border)
+                            .frame(height: 3)
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(CanovRTheme.primary)
+                            .frame(width: geo.size.width * (Double(step) / Double(totalSteps)), height: 3)
+                            .animation(.easeInOut(duration: 0.3), value: step)
+                    }
+                }
+                .frame(height: 3)
+                .padding(.horizontal, CanovRTheme.spacingXL)
+                .padding(.top, CanovRTheme.spacingSM)
 
                 // Step Content
                 TabView(selection: $step) {
@@ -61,9 +71,10 @@ struct OnboardingFlow: View {
             }
         }
         .onAppear {
-            // Name aus Auth-Daten übernehmen
             if let profile = authState.stravaProfile {
                 onboarding.name = "\(profile.firstName) \(profile.lastName)".trimmingCharacters(in: .whitespaces)
+            } else if let name = authState.registeredName {
+                onboarding.name = name
             }
         }
     }

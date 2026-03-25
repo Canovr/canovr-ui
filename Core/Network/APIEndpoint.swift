@@ -9,6 +9,8 @@ enum APIEndpoint {
     case logout(RefreshTokenRequest)
     case getMe
 
+    case deleteAccount
+
     // Athletes
     case createAthlete(AthleteCreate)
     case getAthlete(Int)
@@ -24,6 +26,8 @@ enum APIEndpoint {
         switch self {
         case .getAthlete, .getHistory, .getMe:
             return "GET"
+        case .deleteAccount:
+            return "DELETE"
         case .updateAthlete:
             return "PATCH"
         default:
@@ -44,7 +48,7 @@ enum APIEndpoint {
             return "/api/auth/refresh"
         case .logout:
             return "/api/auth/logout"
-        case .getMe:
+        case .getMe, .deleteAccount:
             return "/api/auth/me"
 
         // Athletes

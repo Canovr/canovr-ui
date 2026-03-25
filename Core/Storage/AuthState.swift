@@ -5,6 +5,7 @@ final class AuthState {
     var accessToken: String?
     var refreshToken: String?
     var needsOnboarding: Bool = false
+    var registeredName: String?
     var stravaProfile: StravaProfile?
 
     var isAuthenticated: Bool { accessToken != nil }

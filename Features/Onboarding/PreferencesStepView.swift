@@ -7,7 +7,9 @@ struct PreferencesStepView: View {
     @Binding var raceDate: Date
     let onNext: () -> Void
 
-    private let dayLabels = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+    private var dayLabels: [String] {
+        Calendar.current.shortWeekdaySymbols.map { $0.replacingOccurrences(of: ".", with: "") }
+    }
 
     var body: some View {
         VStack(spacing: 36) {
@@ -17,8 +19,8 @@ struct PreferencesStepView: View {
                 .font(CanovRTheme.titleFont)
                 .foregroundStyle(CanovRTheme.textPrimary)
 
-            // Ruhetag
-            VStack(spacing: 12) {
+            // Rest day
+            VStack(spacing: CanovRTheme.spacingMD) {
                 Text("Ruhetag")
                     .font(CanovRTheme.bodyFont)
                     .foregroundStyle(CanovRTheme.textSecondary)
@@ -27,7 +29,7 @@ struct PreferencesStepView: View {
             }
 
             // Long Run
-            VStack(spacing: 12) {
+            VStack(spacing: CanovRTheme.spacingMD) {
                 Text("Langer Lauf")
                     .font(CanovRTheme.bodyFont)
                     .foregroundStyle(CanovRTheme.textSecondary)
@@ -35,12 +37,12 @@ struct PreferencesStepView: View {
                 DayBubbles(selected: $longRunDay, labels: dayLabels)
             }
 
-            // Wettkampf
-            VStack(spacing: 12) {
+            // Race
+            VStack(spacing: CanovRTheme.spacingMD) {
                 Toggle("Wettkampf geplant?", isOn: $hasRace)
-                    .tint(CanovRTheme.azure)
+                    .tint(CanovRTheme.primary)
                     .foregroundStyle(CanovRTheme.textPrimary)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
 
                 if hasRace {
                     DatePicker(
@@ -50,9 +52,9 @@ struct PreferencesStepView: View {
                         displayedComponents: .date
                     )
                     .datePickerStyle(.compact)
-                    .tint(CanovRTheme.azure)
+                    .tint(CanovRTheme.primary)
                     .foregroundStyle(CanovRTheme.textPrimary)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
                 }
             }
 
@@ -60,14 +62,9 @@ struct PreferencesStepView: View {
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.custom("Lato-Bold", size: 18))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(CanovRTheme.azure)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .primaryButtonStyle()
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, CanovRTheme.spacingXL)
             .padding(.bottom, 48)
         }
     }
@@ -80,21 +77,28 @@ struct DayBubbles: View {
     let labels: [String]
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: CanovRTheme.spacingSM) {
             ForEach(0..<7, id: \.self) { index in
                 Button {
                     selected = index
                 } label: {
                     Text(labels[index])
-                        .font(.custom("Lato-Bold", size: 14))
+                        .font(CanovRTheme.lato(14, weight: .bold))
                         .foregroundStyle(selected == index ? .white : CanovRTheme.textSecondary)
                         .frame(width: 40, height: 40)
                         .background(
                             selected == index
-                                ? CanovRTheme.azure
+                                ? CanovRTheme.primary
                                 : CanovRTheme.surface
                         )
                         .clipShape(Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(
+                                    selected == index ? Color.clear : CanovRTheme.border,
+                                    lineWidth: 1
+                                )
+                        )
                 }
             }
         }

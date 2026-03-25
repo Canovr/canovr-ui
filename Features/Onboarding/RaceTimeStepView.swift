@@ -23,7 +23,7 @@ struct RaceTimeStepView: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: CanovRTheme.spacingXL) {
             Spacer()
 
             Text("Deine aktuelle Bestzeit")
@@ -32,10 +32,10 @@ struct RaceTimeStepView: View {
 
             Text(distanceLabel)
                 .font(CanovRTheme.bodyFont)
-                .foregroundStyle(CanovRTheme.azure)
+                .foregroundStyle(CanovRTheme.primary)
 
             // Time Picker
-            HStack(spacing: 4) {
+            HStack(spacing: CanovRTheme.spacingXS) {
                 Picker("Minuten", selection: $minutes) {
                     ForEach(0..<300) { m in
                         Text("\(m) min").tag(m)
@@ -45,7 +45,7 @@ struct RaceTimeStepView: View {
                 .frame(width: 120)
 
                 Text(":")
-                    .font(.custom("Lato-Bold", size: 28))
+                    .font(CanovRTheme.lato(28, weight: .bold))
                     .foregroundStyle(CanovRTheme.textPrimary)
 
                 Picker("Sekunden", selection: $seconds) {
@@ -59,26 +59,21 @@ struct RaceTimeStepView: View {
             .frame(height: 150)
 
             // Live Pace
-            HStack(spacing: 4) {
+            HStack(spacing: CanovRTheme.spacingXS) {
                 Text("=")
-                    .foregroundStyle(CanovRTheme.textSecondary)
+                    .foregroundStyle(CanovRTheme.textTertiary)
                 Text(paceDisplay)
                     .font(CanovRTheme.paceFont)
-                    .foregroundStyle(CanovRTheme.azure)
+                    .foregroundStyle(CanovRTheme.primary)
             }
 
             Spacer()
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.custom("Lato-Bold", size: 18))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(CanovRTheme.azure)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .primaryButtonStyle()
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, CanovRTheme.spacingXL)
             .padding(.bottom, 48)
         }
     }

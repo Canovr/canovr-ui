@@ -6,7 +6,7 @@ struct WeekPlanView: View {
     var body: some View {
         ScrollView {
             if let week = appState.currentWeek {
-                VStack(spacing: 12) {
+                VStack(spacing: CanovRTheme.spacingMD) {
                     // Summary Header
                     HStack {
                         PhaseIndicator(
@@ -16,15 +16,15 @@ struct WeekPlanView: View {
                         )
                         Spacer()
                         VStack(alignment: .trailing, spacing: 2) {
-                            Text(String(format: "%.0f km", week.totalKm))
-                                .font(.custom("Lato-Bold", size: 18))
+                            Text("\(week.totalKm, specifier: "%.0f") km")
+                                .font(CanovRTheme.lato(18, weight: .bold))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text("\(week.hardSessions) harte Einheiten")
                                 .font(CanovRTheme.captionFont)
                                 .foregroundStyle(CanovRTheme.textSecondary)
                         }
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
 
                     // Day Cards
                     ForEach(week.days) { day in
@@ -33,26 +33,26 @@ struct WeekPlanView: View {
 
                     // Reasoning Trace (expandable)
                     DisclosureGroup {
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: CanovRTheme.spacingXS) {
                             ForEach(week.reasoningTrace, id: \.self) { line in
                                 Text(line)
                                     .font(.system(size: 11, design: .monospaced))
-                                    .foregroundStyle(CanovRTheme.textSecondary)
+                                    .foregroundStyle(CanovRTheme.textTertiary)
                             }
                         }
                     } label: {
                         Text("PyReason-Details")
                             .font(CanovRTheme.captionFont)
-                            .foregroundStyle(CanovRTheme.azure)
+                            .foregroundStyle(CanovRTheme.primary)
                     }
-                    .tint(CanovRTheme.azure)
+                    .tint(CanovRTheme.primary)
                     .cardStyle()
                 }
-                .padding(.vertical, 16)
+                .padding(.vertical, CanovRTheme.spacingLG)
             } else {
-                VStack(spacing: 16) {
+                VStack(spacing: CanovRTheme.spacingLG) {
                     ProgressView()
-                        .tint(CanovRTheme.azure)
+                        .tint(CanovRTheme.primary)
                     Text("Wochenplan wird geladen...")
                         .font(CanovRTheme.bodyFont)
                         .foregroundStyle(CanovRTheme.textSecondary)

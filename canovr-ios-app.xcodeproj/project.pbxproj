@@ -10,6 +10,7 @@
 		54054B5A2F6B2D1600F99C47 /* canovr-ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "canovr-ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54054CE32F6DF66800F99C47 /* canovr-ios-app.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "canovr-ios-app.xcodeproj"; sourceTree = "<group>"; };
 		54054DBE2F6DFFAA00F99C47 /* canovr-ios-app.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "canovr-ios-app.xcodeproj"; sourceTree = "<group>"; };
+		54054ECC2F71DB0A00F99C47 /* canovr-ios-app.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "canovr-ios-app.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,6 +57,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		54054ECF2F71DB0A00F99C47 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -97,9 +103,10 @@
 				};
 			};
 			buildConfigurationList = 54054B552F6B2D1600F99C47 /* Build configuration list for PBXProject "canovr-ios-app" */;
-			developmentRegion = en;
+			developmentRegion = de;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				de,
 				en,
 				Base,
 			);
@@ -116,6 +123,10 @@
 				{
 					ProductGroup = 54054CE52F6DF66800F99C47 /* Products */;
 					ProjectRef = 54054CE32F6DF66800F99C47 /* canovr-ios-app.xcodeproj */;
+				},
+				{
+					ProductGroup = 54054ECF2F71DB0A00F99C47 /* Products */;
+					ProjectRef = 54054ECC2F71DB0A00F99C47 /* canovr-ios-app.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -287,7 +298,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "myorg.canovr-ios-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.canovr.app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -319,7 +330,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "myorg.canovr-ios-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.canovr.app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

@@ -13,19 +13,19 @@ struct VolumeStepView: View {
                 .font(CanovRTheme.titleFont)
                 .foregroundStyle(CanovRTheme.textPrimary)
 
-            // Wochenkilometer
-            VStack(spacing: 16) {
+            // Weekly kilometers
+            VStack(spacing: CanovRTheme.spacingLG) {
                 Text("Wochenkilometer")
                     .font(CanovRTheme.bodyFont)
                     .foregroundStyle(CanovRTheme.textSecondary)
 
                 Text("\(Int(weeklyKm)) km")
-                    .font(.custom("Lato-Bold", size: 36))
+                    .font(CanovRTheme.lato(36, weight: .bold))
                     .foregroundStyle(CanovRTheme.textPrimary)
 
                 Slider(value: $weeklyKm, in: 10...150, step: 5)
-                    .tint(CanovRTheme.azure)
-                    .padding(.horizontal, 24)
+                    .tint(CanovRTheme.primary)
+                    .padding(.horizontal, CanovRTheme.spacingXL)
 
                 HStack {
                     Text("10 km")
@@ -33,37 +33,32 @@ struct VolumeStepView: View {
                     Text("150 km")
                 }
                 .font(CanovRTheme.captionFont)
-                .foregroundStyle(CanovRTheme.textSecondary)
-                .padding(.horizontal, 24)
+                .foregroundStyle(CanovRTheme.textTertiary)
+                .padding(.horizontal, CanovRTheme.spacingXL)
             }
 
-            // Erfahrung
-            VStack(spacing: 16) {
+            // Experience
+            VStack(spacing: CanovRTheme.spacingLG) {
                 Text("Erfahrung")
                     .font(CanovRTheme.bodyFont)
                     .foregroundStyle(CanovRTheme.textSecondary)
 
                 Picker("Erfahrung", selection: $experience) {
                     ForEach(OnboardingData.ExperienceLevel.allCases, id: \.self) { level in
-                        Text(level.rawValue).tag(level)
+                        Text(level.displayName).tag(level)
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 24)
+                .padding(.horizontal, CanovRTheme.spacingXL)
             }
 
             Spacer()
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.custom("Lato-Bold", size: 18))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(CanovRTheme.azure)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .primaryButtonStyle()
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, CanovRTheme.spacingXL)
             .padding(.bottom, 48)
         }
     }

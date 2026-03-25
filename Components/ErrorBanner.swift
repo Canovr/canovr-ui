@@ -5,9 +5,9 @@ struct ErrorBanner: View {
     var onDismiss: (() -> Void)? = nil
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: CanovRTheme.spacingSM) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.red)
+                .foregroundStyle(CanovRTheme.error)
             Text(message)
                 .font(CanovRTheme.captionFont)
                 .foregroundStyle(CanovRTheme.textPrimary)
@@ -16,12 +16,16 @@ struct ErrorBanner: View {
                 Button { onDismiss() } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(CanovRTheme.textSecondary)
+                        .foregroundStyle(CanovRTheme.textTertiary)
                 }
             }
         }
-        .padding(12)
-        .background(Color.red.opacity(0.15))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(CanovRTheme.spacingMD)
+        .background(CanovRTheme.error.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: CanovRTheme.radiusMD))
+        .overlay(
+            RoundedRectangle(cornerRadius: CanovRTheme.radiusMD)
+                .stroke(CanovRTheme.error.opacity(0.2), lineWidth: 1)
+        )
     }
 }

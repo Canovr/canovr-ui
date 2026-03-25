@@ -161,6 +161,10 @@ final class APIClient {
         try await request(.getMe)
     }
 
+    func deleteAccount() async throws {
+        _ = try await request(.deleteAccount) as [String: String]
+    }
+
     // MARK: - Athletes
 
     func createAthlete(

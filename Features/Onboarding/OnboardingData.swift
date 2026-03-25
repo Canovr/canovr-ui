@@ -1,6 +1,6 @@
 import Foundation
 
-/// Sammelt alle Eingaben über die Onboarding-Schritte hinweg.
+/// Collects all inputs across onboarding steps.
 @Observable
 final class OnboardingData {
     var name: String = ""
@@ -9,15 +9,23 @@ final class OnboardingData {
     var raceTimeSeconds: Int = 0
     var weeklyKm: Double = 40
     var experienceLevel: ExperienceLevel = .intermediate
-    var restDay: Int = 1         // 0=So, 1=Mo ... 6=Sa
-    var longRunDay: Int = 0      // Sonntag
+    var restDay: Int = 1         // 0=Sun, 1=Mon ... 6=Sat
+    var longRunDay: Int = 0      // Sunday
     var hasUpcomingRace: Bool = false
     var raceDate: Date = Calendar.current.date(byAdding: .day, value: 56, to: .now)!
 
     enum ExperienceLevel: String, CaseIterable {
-        case beginner = "Einsteiger"
-        case intermediate = "Fortgeschritten"
-        case experienced = "Erfahren"
+        case beginner
+        case intermediate
+        case experienced
+
+        var displayName: String {
+            switch self {
+            case .beginner:     return String(localized: "Einsteiger")
+            case .intermediate: return String(localized: "Fortgeschritten")
+            case .experienced:  return String(localized: "Erfahren")
+            }
+        }
 
         var years: Int {
             switch self {
@@ -37,7 +45,6 @@ final class OnboardingData {
         return max(0, Calendar.current.dateComponents([.day], from: .now, to: raceDate).day ?? 0)
     }
 
-    /// Smart Defaults für Bestzeit basierend auf Distanz
     var defaultMinutes: Int {
         switch targetDistance {
         case "800m": return 3
@@ -69,7 +76,7 @@ final class OnboardingData {
     }
 }
 
-/// Distanz-Optionen für den Picker
+/// Distance options for picker
 struct DistanceOption: Identifiable {
     let id: String
     let label: String
@@ -78,11 +85,11 @@ struct DistanceOption: Identifiable {
     static let all: [DistanceOption] = [
         .init(id: "800m", label: "800 m", km: 0.8),
         .init(id: "1500m", label: "1500 m", km: 1.5),
-        .init(id: "mile", label: "Meile", km: 1.609),
+        .init(id: "mile", label: String(localized: "Meile"), km: 1.609),
         .init(id: "3k", label: "3 km", km: 3.0),
         .init(id: "5k", label: "5 km", km: 5.0),
         .init(id: "10k", label: "10 km", km: 10.0),
-        .init(id: "half_marathon", label: "Halbmarathon", km: 21.1),
+        .init(id: "half_marathon", label: String(localized: "Halbmarathon"), km: 21.1),
         .init(id: "marathon", label: "Marathon", km: 42.2),
     ]
 }

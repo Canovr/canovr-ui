@@ -60,6 +60,8 @@ final class AppState {
     @MainActor
     func loadAthlete(retries: Int = 3) async {
         guard let id = athleteId else { return }
+        // Already loaded — skip
+        if athlete != nil { return }
         isLoading = true
         error = nil
 
@@ -104,6 +106,8 @@ final class AppState {
     @MainActor
     func loadWeek(retries: Int = 3) async {
         guard let id = athleteId else { return }
+        // Already loading or loaded — skip
+        if isLoadingWeek { return }
         isLoadingWeek = true
         error = nil
 
@@ -185,9 +189,10 @@ final class AppState {
         pendingCreateKey = nil
         isLoading = false
 
-        // 3. Woche entkoppelt im Hintergrund laden (mit Retries für Cold Starts)
-        Task { @MainActor in
-            await self.loadWeek(retries: 3)
+        // 3. Woche entkoppelt im Hintergrund laden (detached, damit View-Wechsel den Task nicht cancellt)
+        let state = self
+        Task.detached { @MainActor in
+            await state.loadWeek(retries: 3)
         }
     }
 

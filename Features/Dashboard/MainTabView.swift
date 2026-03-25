@@ -13,9 +13,9 @@ enum Tab: Int, CaseIterable {
 
     var label: String {
         switch self {
-        case .training: return "Training"
-        case .history:  return "Verlauf"
-        case .profile:  return "Profil"
+        case .training: return String(localized: "Training")
+        case .history:  return String(localized: "Verlauf")
+        case .profile:  return String(localized: "Profil")
         }
     }
 }
@@ -38,24 +38,27 @@ struct MainTabView: View {
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundStyle(CanovRTheme.primary)
                     }
-                    .padding(.leading, 16)
+                    .padding(.leading, CanovRTheme.spacingXL)
                 }
 
                 Spacer()
 
-                // Current view name (right)
+                // Section label (right)
                 Text(selectedTab.label)
-                    .font(.custom("Lato-Bold", size: 14))
-                    .foregroundStyle(CanovRTheme.textSecondary)
-                    .padding(.trailing, 16)
+                    .font(CanovRTheme.lato(13, weight: .regular))
+                    .foregroundStyle(CanovRTheme.textTertiary)
+                    .padding(.trailing, CanovRTheme.spacingXL)
             }
             .overlay {
                 Text("CANOVR")
                     .font(CanovRTheme.logoFont)
                     .foregroundStyle(CanovRTheme.primary)
             }
-            .padding(.vertical, 10)
-            .background(CanovRTheme.surface)
+            .padding(.vertical, 12)
+            .background(CanovRTheme.background)
+
+            // Thin divider
+            CanovRTheme.divider.frame(height: 1)
 
             // Content
             Group {
@@ -67,15 +70,21 @@ struct MainTabView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
+            // Thin divider above tab bar
+            CanovRTheme.divider.frame(height: 1)
+
             // Bottom Tab Bar
             HStack(spacing: 0) {
                 ForEach(Tab.allCases, id: \.rawValue) { tab in
                     Button {
-                        selectedTab = tab
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedTab = tab
+                        }
                     } label: {
-                        VStack(spacing: 3) {
+                        VStack(spacing: 4) {
                             Image(systemName: tab.icon)
                                 .font(.system(size: 18, weight: .medium))
+                                .symbolVariant(selectedTab == tab ? .fill : .none)
                             Text(tab.label)
                                 .font(.system(size: 10, weight: .medium))
                         }
@@ -84,8 +93,8 @@ struct MainTabView: View {
                     }
                 }
             }
-            .padding(.top, 8)
-            .padding(.bottom, 2)
+            .padding(.top, 10)
+            .padding(.bottom, 4)
             .background(CanovRTheme.tabBarBackground)
         }
         .ignoresSafeArea(.container, edges: .bottom)

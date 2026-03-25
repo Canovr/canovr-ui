@@ -26,24 +26,24 @@ struct OnboardingSummaryView: View {
         return String(format: "%d:%02d/km", m, s)
     }
 
-    private let dayLabels = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
+    private var dayLabels: [String] { Calendar.current.weekdaySymbols }
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: CanovRTheme.spacingXL) {
                 Text("Alles klar?")
                     .font(CanovRTheme.titleFont)
                     .foregroundStyle(CanovRTheme.textPrimary)
-                    .padding(.top, 24)
+                    .padding(.top, CanovRTheme.spacingXL)
 
                 // Summary Card
-                VStack(spacing: 16) {
+                VStack(spacing: CanovRTheme.spacingLG) {
                     SummaryRow(label: "Name", value: data.name)
                     SummaryRow(label: "Zieldistanz", value: distanceLabel)
                     SummaryRow(label: "Bestzeit", value: timeDisplay)
                     SummaryRow(label: "Pace", value: paceDisplay)
                     SummaryRow(label: "Wochenkilometer", value: "\(Int(data.weeklyKm)) km")
-                    SummaryRow(label: "Erfahrung", value: data.experienceLevel.rawValue)
+                    SummaryRow(label: "Erfahrung", value: data.experienceLevel.displayName)
                     SummaryRow(label: "Ruhetag", value: dayLabels[data.restDay])
                     SummaryRow(label: "Langer Lauf", value: dayLabels[data.longRunDay])
                     if let days = data.daysToRace {
@@ -53,17 +53,17 @@ struct OnboardingSummaryView: View {
                 .cardStyle()
 
                 // Zone Preview
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: CanovRTheme.spacingMD) {
                     Text("Deine Pace-Zonen")
-                        .font(.custom("Lato-Bold", size: 16))
+                        .font(CanovRTheme.lato(16, weight: .bold))
                         .foregroundStyle(CanovRTheme.textPrimary)
 
                     let zones = computePreviewZones()
                     ForEach(zones, id: \.label) { zone in
                         HStack {
-                            RoundedRectangle(cornerRadius: 4)
+                            RoundedRectangle(cornerRadius: 3)
                                 .fill(CanovRTheme.zoneColor(percentage: zone.pct))
-                                .frame(width: 6, height: 24)
+                                .frame(width: 4, height: 24)
 
                             Text(zone.label)
                                 .font(CanovRTheme.captionFont)
@@ -78,7 +78,7 @@ struct OnboardingSummaryView: View {
 
                             Text(zone.role)
                                 .font(CanovRTheme.captionFont)
-                                .foregroundStyle(CanovRTheme.textSecondary)
+                                .foregroundStyle(CanovRTheme.textTertiary)
                         }
                     }
                 }
@@ -87,8 +87,8 @@ struct OnboardingSummaryView: View {
                 if let error {
                     Text(error)
                         .font(CanovRTheme.captionFont)
-                        .foregroundStyle(.red)
-                        .padding(.horizontal, 24)
+                        .foregroundStyle(CanovRTheme.error)
+                        .padding(.horizontal, CanovRTheme.spacingXL)
                 }
 
                 // Create Button
@@ -98,20 +98,14 @@ struct OnboardingSummaryView: View {
                     if isCreating {
                         ProgressView()
                             .tint(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
+                            .primaryButtonStyle()
                     } else {
                         Text("Profil erstellen")
-                            .font(.custom("Lato-Bold", size: 18))
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
+                            .primaryButtonStyle()
                     }
                 }
-                .background(CanovRTheme.azureGradient)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
                 .disabled(isCreating)
-                .padding(.horizontal, 24)
+                .padding(.horizontal, CanovRTheme.spacingXL)
                 .padding(.bottom, 48)
             }
         }
@@ -139,7 +133,7 @@ struct OnboardingSummaryView: View {
         isCreating = false
     }
 
-    // MARK: - Zonen-Vorschau berechnen (client-seitig, nur für Preview)
+    // MARK: - Zone preview (client-side, preview only)
 
     private struct ZonePreview {
         let label: String
@@ -153,14 +147,14 @@ struct OnboardingSummaryView: View {
         let racePaceSeconds = data.raceTimeInSeconds / km
 
         let zones: [(String, Int, String)] = [
-            ("z80", 80, "Grundlage"),
-            ("z85", 85, "Aerobe Basis"),
-            ("z90", 90, "Endurance"),
-            ("z95", 95, "Spezifisch"),
-            ("z100", 100, "Race Pace"),
-            ("z105", 105, "Speed"),
-            ("z110", 110, "Intervalle"),
-            ("z115", 115, "Strides"),
+            ("z80", 80, String(localized: "Grundlage")),
+            ("z85", 85, String(localized: "Aerobe Basis")),
+            ("z90", 90, String(localized: "Endurance")),
+            ("z95", 95, String(localized: "Spezifisch")),
+            ("z100", 100, String(localized: "Race Pace")),
+            ("z105", 105, String(localized: "Speed")),
+            ("z110", 110, String(localized: "Intervalle")),
+            ("z115", 115, String(localized: "Strides")),
         ]
 
         return zones.map { label, pct, role in
@@ -185,7 +179,7 @@ private struct SummaryRow: View {
                 .foregroundStyle(CanovRTheme.textSecondary)
             Spacer()
             Text(value)
-                .font(.custom("Lato-Bold", size: 16))
+                .font(CanovRTheme.lato(16, weight: .bold))
                 .foregroundStyle(CanovRTheme.textPrimary)
         }
     }

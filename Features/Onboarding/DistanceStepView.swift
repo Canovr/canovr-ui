@@ -5,7 +5,7 @@ struct DistanceStepView: View {
     let onNext: () -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: CanovRTheme.spacingXXL) {
             Spacer()
 
             Text("Deine Zieldistanz")
@@ -14,14 +14,14 @@ struct DistanceStepView: View {
 
             LazyVGrid(columns: [
                 GridItem(.flexible()), GridItem(.flexible()),
-            ], spacing: 12) {
+            ], spacing: CanovRTheme.spacingMD) {
                 ForEach(DistanceOption.all) { option in
                     Button {
                         selected = option.id
                     } label: {
                         VStack(spacing: 6) {
                             Text(option.label)
-                                .font(.custom("Lato-Bold", size: 18))
+                                .font(CanovRTheme.lato(18, weight: .bold))
                                 .foregroundStyle(CanovRTheme.textPrimary)
                             Text(String(format: "%.1f km", option.km))
                                 .font(CanovRTheme.captionFont)
@@ -31,34 +31,29 @@ struct DistanceStepView: View {
                         .padding(.vertical, 18)
                         .background(
                             selected == option.id
-                                ? CanovRTheme.azure.opacity(0.2)
+                                ? CanovRTheme.primaryLight
                                 : CanovRTheme.surface
                         )
+                        .clipShape(RoundedRectangle(cornerRadius: CanovRTheme.radiusMD))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14)
+                            RoundedRectangle(cornerRadius: CanovRTheme.radiusMD)
                                 .stroke(
-                                    selected == option.id ? CanovRTheme.azure : Color.clear,
-                                    lineWidth: 2
+                                    selected == option.id ? CanovRTheme.primary : CanovRTheme.border,
+                                    lineWidth: selected == option.id ? 2 : 1
                                 )
                         )
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
                 }
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, CanovRTheme.spacingXL)
 
             Spacer()
 
             Button(action: onNext) {
                 Text("Weiter")
-                    .font(.custom("Lato-Bold", size: 18))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(CanovRTheme.azure)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .primaryButtonStyle()
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, CanovRTheme.spacingXL)
             .padding(.bottom, 48)
         }
     }
