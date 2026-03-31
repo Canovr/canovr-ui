@@ -116,6 +116,7 @@ struct EditProfileSheet: View {
 
         do {
             appState.athlete = try await appState.api.updateAthlete(athleteId, update)
+            await appState.loadWeek(retries: 3)
             dismiss()
         } catch {
             self.error = error.localizedDescription

@@ -101,7 +101,7 @@ struct LogRaceSheet: View {
 
         do {
             _ = try await appState.api.addRace(athleteId, data)
-            await appState.loadAthlete()
+            await appState.loadWeek(retries: 3)
             dismiss()
         } catch {
             self.error = error.localizedDescription

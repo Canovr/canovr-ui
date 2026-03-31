@@ -96,6 +96,7 @@ struct LogWorkoutSheet: View {
         do {
             _ = try await appState.api.completeWorkout(athleteId, data)
             appState.todayCompleted = true
+            await appState.loadWeek(retries: 3)
             dismiss()
         } catch {
             self.error = error.localizedDescription
